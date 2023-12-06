@@ -1,13 +1,6 @@
-from flask import Flask
-import os
-from flask_sqlalchemy import SQLAlchemy
+import app
 
-basedir = os.path.abspath(os.path.dirname(__file__))
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'database.db')
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # To suppress a warning
-
-db = SQLAlchemy(app)
+db = app.db
 
 class Member(db.Model):
     member_id = db.Column(db.Integer, primary_key=True)
