@@ -65,7 +65,7 @@ def input_post():
     db.session.commit()
 
     return render_template('board.html')
-
+  
 
 @app.route('/post/comment', methods=['POST'])
 def input_comment():
@@ -83,9 +83,10 @@ def input_comment():
     return render_template('comment.html')
 
 
-@app.route('/login')
+@app.route("/login")
 def login():
-    return render_template('login.html')
+    member_list = Member.query.all()
+    return render_template("login.html", data = member_list)
 
 
 if __name__ == "__main__":
