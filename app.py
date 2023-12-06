@@ -14,7 +14,7 @@ db = SQLAlchemy(app)
 
 @app.route('/')
 def home():
-   return render_template('index.html')
+   return render_template('board.html')
 
 @app.route('/post/insert', methods=['POST'])
 def input_post():
@@ -24,8 +24,8 @@ def input_post():
    content = request.form['content']
 
    board = dbClass.Board(
-      comment_id = 1,
       member_id =1,
+      comment_id=1,
       skill=skill, 
       secondTag=tags,
       content=content, 
@@ -34,7 +34,7 @@ def input_post():
    db.session.add(board)
    db.session.commit()
 
-   return render_template('board_input.html')
+   return render_template('board.html')
 
 
 @app.route('/post/comment', methods=['POST'])
