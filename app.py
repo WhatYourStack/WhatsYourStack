@@ -1,7 +1,11 @@
 from xml.etree.ElementTree import Comment
-from flask import Flask, render_template, request
+
+from flask import Flask, render_template,request,jsonify
+# import dbClass
 from flask_sqlalchemy import SQLAlchemy
-import os
+from sqlalchemy.orm import sessionmaker
+import os, re
+from sqlalchemy import create_engine
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)
@@ -13,7 +17,7 @@ db = SQLAlchemy(app)
 
 class Member(db.Model):
     member_id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String, nullable=False)
+    email = db.Column(db.String, nullable=False, unique=True)
     password = db.Column(db.String, nullable=False)
     name = db.Column(db.String, nullable=False)
     boards = db.relationship('Board', backref='author', lazy=True)
@@ -88,6 +92,40 @@ def login():
     member_list = Member.query.all()
     return render_template("login.html", data = member_list)
 
+
+engine = create_engine('sqlite:///' + os.path.join(basedir, 'database.db'), echo=True)
+
+Session = sessionmaker(bind=engine)
+session = Session()
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        data = request.get_json()
+        
+        email = data.get('email')
+        password = data.get('password')
+        name = data.get('name')
+
+        if not is_valid_email(email):
+            return jsonify({'message' : '올바른 메일 형식이 아닙니다.'})
+        
+        new_member = Member(email=email, password=password, name=name)
+        session.add(new_member)
+        try:
+            session.commit()
+            print("회원가입이 완료되었습니다.")
+        except Exception as e:
+            session.rollback()
+            print(f"에러 발생: {e}")
+        finally:
+            session.close()
+
+    return render_template('register.html')
+
+def is_valid_email(email):
+    pattern = re.compile(r"[^@]+@[^@]+\.[^@]+")
+    return bool(re.match(pattern, email))
 
 if __name__ == "__main__":
     app.run(debug=True)
