@@ -50,6 +50,7 @@ def input_post():
    board = Board(
       comment_id = 1,
       member_id =1,
+      comment_id=1,
       skill=skill, 
       secondTag=tags,
       content=content, 
@@ -58,7 +59,7 @@ def input_post():
    db.session.add(board)
    db.session.commit()
 
-   return render_template('board_input.html')
+   return render_template('board.html')
 
 
 @app.route('/post/comment', methods=['POST'])
