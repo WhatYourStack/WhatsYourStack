@@ -1,3 +1,4 @@
+from xml.etree.ElementTree import Comment
 from flask import Flask, render_template,request
 import dbClass
 from flask_sqlalchemy import SQLAlchemy
@@ -22,7 +23,7 @@ def input_post():
    tags = request.form['tags']
    content = request.form['content']
 
-   song = dbClass.Board(
+   board = dbClass.Board(
       comment_id = 1,
       member_id =1,
       skill=skill, 
@@ -30,7 +31,7 @@ def input_post():
       content=content, 
       image_url=photo
       )
-   db.session.add(song)
+   db.session.add(board)
    db.session.commit()
 
    return render_template('board_input.html')
@@ -41,13 +42,13 @@ def input_comment():
 
    content = request.form['content']
 
-   song = dbClass.Comment(
+   comment = dbClass.Comment(
       board_id = 3,
       member_id =1,
       content=content, 
    
       )
-   db.session.add(song)
+   db.session.add(comment)
    db.session.commit()
 
    return render_template('comment.html')
