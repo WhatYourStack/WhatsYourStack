@@ -1,6 +1,6 @@
 from xml.etree.ElementTree import Comment
 
-from flask import Flask, render_template,request,jsonify
+from flask import Flask, render_template,request,jsonify,redirect, url_for
 # import dbClass
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import sessionmaker
@@ -50,25 +50,28 @@ def home():
     return render_template('index.html', data=board_list)
 
 
-@app.route('/post/insert', methods=['POST'])
+@app.route('/post/insert', methods=['GET', 'POST'])
 def input_post():
-    photo = request.form['photoUrl']
-    skill = request.form['skill']
-    tags = request.form['tags']
-    content = request.form['content']
+    if request.method == 'POST':
+        photo = request.form['photoUrl']
+        skill = request.form['skill']
+        tags = request.form['tags']
+        content = request.form['content']
 
-    board = Board(
-        member_id=1,
-        comment_id=1,
-        skill=skill,
-        secondTag=tags,
-        content=content,
-        image_url=photo
-    )
-    db.session.add(board)
-    db.session.commit()
-
-    return render_template('board.html')
+        board = Board(
+            member_id=1,
+            comment_id=1,
+            skill=skill,
+            secondTag=tags,
+            content=content,
+            image_url=photo
+        )
+        db.session.add(board)
+        db.session.commit()
+        return redirect(url_for('index.html'))
+    else:
+        return render_template('board.html')
+        
   
 
 @app.route('/post/comment', methods=['POST'])
