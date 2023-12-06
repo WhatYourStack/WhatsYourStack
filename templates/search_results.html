@@ -111,42 +111,28 @@
 </head>
 
 <body>
-    <header class="header">
-        <nav class="custom-nav">
-            <div class="logo-wrap">
-                <a href="/"><img src="/static/images/logo.png" alt="logo" class="logo-img" /></a>
-            </div>
-            <ul class="custom-navbar-list">
-                <li class="custom-nav-item">
-                    <a class="custom-nav-link" href="/login">로그인</a>
-                </li>
-                <li class="custom-nav-item">
-                    <a class="custom-nav-link" href="/register">회원가입</a>
-                </li>
-            </ul>
-        </nav>
-    </header>
-
     <section class="container">
         <form action="" class="search" id="search-form">
             <div class="input-group mb-3 w-100">
                 <input type="text" name="query" class="form-control" placeholder="주특기를 입력해주세요."
                     aria-label="Recipient's username" aria-describedby="button-addon2">
-                <button class="search-btn btn btn-outline-secondary" type="button" id="button-addon2">검색</button>
+                <button class="search-btn btn btn-outline-secondary" type="submit" id="button-addon2">검색</button>
             </div>
         </form>
         <div class="row row-cols-1 row-cols-md-3 g-3">
-            {% for card in data %}
+            {% for board in boards %}
             <div class="col">
-                <a href="/member/{{ card.board_id }}" class="card h-300">
-                    <img src="{{ card.image_url }}" class="card-img-top" alt="thumbnail">
+                <a href="/member/{{ board.board_id }}" class="card h-300">
+                    <img src="{{ board.image_url }}" class="card-img-top" alt="thumbnail">
                     <div class="card-body">
-                        <h5 class="member-name">{{ card.author.name }}</h5>
-                        <span class="member-skill">#{{ card.skill }}</span>
-                        <span class="member-tag">#{{ card.secondTag }}</span>
+                        <h5 class="member-name">{{ board.author.name }}</h5>
+                        <span class="member-skill">#{{ board.skill }}</span>
+                        <span class="member-tag">#{{ board.secondTag }}</span>
                     </div>
                 </a>
             </div>
+            {% else %}
+            <p>검색 결과가 없습니다.</p>
             {% endfor %}
         </div>
         <div class="fixed-button">
@@ -169,17 +155,16 @@
                 span.textContent = span.textContent.toUpperCase();
             });
         }
-
         function handleSearch(event) {
-            event.preventDefault(); 
+            event.preventDefault(); // 기본 폼 제출 동작 방지
 
             var query = document.querySelector('input[name="query"]').value;
             fetch('/search?query=' + encodeURIComponent(query))
                 .then(response => response.text())
                 .then(html => {
                     document.querySelector('.container').innerHTML = html;
-                    applyTextTransformations(); 
-                    attachSearchEvent(); 
+                    applyTextTransformations(); // 대문자 변환 적용
+                    attachSearchEvent(); // 검색 이벤트 리스너 재적용
                 })
                 .catch(error => console.error('Error:', error));
         }

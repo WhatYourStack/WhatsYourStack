@@ -1,11 +1,11 @@
 from xml.etree.ElementTree import Comment
 
 from flask import Flask, render_template,request,jsonify,redirect, url_for
-# import dbClass
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import sessionmaker
 import os, re
 from sqlalchemy import create_engine
+from sqlalchemy import func
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)
@@ -49,6 +49,19 @@ def home():
     board_list = Board.query.all()
     return render_template('index.html', data=board_list)
 
+@app.route('/search', methods=['GET'])
+def search():
+    search_query = request.args.get('query', '').lower()
+    if search_query:
+        search_pattern = f"%{search_query}%"
+        results = Board.query.filter(func.lower(Board.skill).like(search_pattern)).all()
+
+        if results:
+            return render_template('search_results.html', boards=results)
+        else:
+            return render_template('search_results.html', message="검색 결과가 없습니다.")
+    else:
+        return redirect(url_for('home'))
 
 @app.route('/post/insert', methods=['GET', 'POST'])
 def input_post():
