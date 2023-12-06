@@ -1,6 +1,5 @@
 from flask import Flask, render_template,request
 import dbClass
-from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 import os
 
@@ -14,7 +13,7 @@ db = SQLAlchemy(app)
 
 @app.route('/')
 def home():
-   return render_template('index.html')
+   return render_template('comment.html')
 
 @app.route('/post/insert', methods=['POST'])
 def input_post():
@@ -35,6 +34,23 @@ def input_post():
    db.session.commit()
 
    return render_template('board_input.html')
+
+
+@app.route('/post/comment', methods=['POST'])
+def input_comment():
+
+   content = request.form['content']
+
+   song = dbClass.Comment(
+      board_id = 3,
+      member_id =1,
+      content=content, 
+   
+      )
+   db.session.add(song)
+   db.session.commit()
+
+   return render_template('comment.html')
 
 @app.route('/login')
 def login():
