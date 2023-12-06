@@ -14,7 +14,7 @@ db = SQLAlchemy(app)
 
 @app.route('/')
 def home():
-   return render_template('board_input.html')
+   return render_template('index.html')
 
 @app.route('/post/insert', methods=['POST'])
 def input_post():
@@ -34,9 +34,9 @@ def input_post():
    db.session.add(song)
    db.session.commit()
 
-   return render_template('index.html')
+   return render_template('board_input.html')
 
-@app.route('login.html')
+@app.route('/login')
 def login():
    return render_template('login.html')
 
