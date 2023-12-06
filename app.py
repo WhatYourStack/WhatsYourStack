@@ -50,7 +50,6 @@ def input_post():
    board = Board(
       comment_id = 1,
       member_id =1,
-      comment_id=1,
       skill=skill, 
       secondTag=tags,
       content=content, 
