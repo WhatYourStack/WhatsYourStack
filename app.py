@@ -13,7 +13,7 @@ db = SQLAlchemy(app)
 
 @app.route('/')
 def home():
-   return render_template('comment.html')
+   return render_template('index.html')
 
 @app.route('/post/insert', methods=['POST'])
 def input_post():
@@ -22,7 +22,7 @@ def input_post():
    tags = request.form['tags']
    content = request.form['content']
 
-   song = dbClass.Board(
+   board = dbClass.Board(
       comment_id = 1,
       member_id =1,
       skill=skill, 
@@ -41,7 +41,7 @@ def input_comment():
 
    content = request.form['content']
 
-   song = dbClass.Comment(
+   comment = dbClass.Comment(
       board_id = 3,
       member_id =1,
       content=content, 
