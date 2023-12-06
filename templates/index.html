@@ -1,11 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-  </head>
-  <body>
-    <h1>안녕, 스파르타야</h1>
-  </body>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What's Your Stack?</title>
+    <style>
+        body {
+            background-position: center;
+            background-size: cover;
+            color: black;
+        }
+
+        .header {
+            width: 100%;
+            border-bottom: 1px solid rgb(176, 176, 176);
+        }
+
+        .navbar {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo-wrap {
+            margin-left: 10px;
+        }
+
+        .logo-img {
+            width: 100%;
+        }
+
+        .navbar-list {
+            display: flex;
+        }
+
+        .nav-item {
+            list-style: none;
+            margin-right: 10px;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: black;
+        }
+    </style>
+    <link rel="icon" href="/static/images/favicon.png" />
+</head>
+
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="logo-wrap">
+                <a href="/"><img src="/static/images/logo.png" alt="logo" class="logo-img" /></a>
+            </div>
+            <ul class="navbar-list">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">로그인</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">회원가입</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="container">
+        <div class="row row-cols-1 row-cols-md-4 g-4 mx-auto w-75 pb-5">
+            {% for card in data %}
+                <div class="col">
+                    <div class="card h-100">
+                        <img src="{{ card.image_url }}" class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h5 class="member-name">{{ card.member_id.name }}</h5>
+                            <p class="member-skill">{{ card.skill }}</p>
+                            <p class="member-tag">{{ card.secondTag }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+
+</body>
+
 </html>

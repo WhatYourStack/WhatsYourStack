@@ -14,7 +14,7 @@ db = SQLAlchemy(app)
 
 @app.route('/')
 def home():
-   return render_template('index.html')
+   return render_template('board_input.html')
 
 @app.route('/post/insert', methods=['POST'])
 def input_post():
@@ -36,9 +36,9 @@ def input_post():
 
    return render_template('index.html')
 
-@app.route('/mypage')
-def mypage():
-	return 'This is My page!'
+@app.route('login.html')
+def login():
+   return render_template('login.html')
 
 if __name__ == "__main__":
    app.run(debug=True)

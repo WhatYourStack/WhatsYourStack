@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>안녕, 스파르타야</h1>
+    <form action="{{url_for('comment_post')}}" method="POST">
+      사진 url <input type="text" id="photo_url" name="photoUrl" />
+
+      주특기 <input type="text" id="skill_input" name="skill" />
+
+      태그 <input type="text" id="tags_input" name="tags" />
+
+      글 작성 <input type="text" id="content_input" name="content" />
+      <button type="submit">전송</button>
+    </form>
+  </body>
+</html>
