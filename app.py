@@ -1,8 +1,9 @@
-from sqlalchemy import create_engine, Column, Integer, String, ForeignKey
+from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from flask import Flask, render_template,request
-from dbClass import app,db,Member,Board,Comment
+from flask import Flask, render_template,request,jsonify
+from dbClass import app,Member
+import re
 app = Flask(__name__)
 
 DATABASE_URL = "sqlite:///database.db"
@@ -23,6 +24,9 @@ def register():
         password = data.get('password')
         name = data.get('name')
 
+        if not is_valid_email(email):
+            return jsonify({'message' : '올바른 메일 형식이 아닙니다.'})
+        
         new_member = Member(email=email, password=password, name=name)
         session.add(new_member)
         try:
@@ -35,6 +39,10 @@ def register():
             session.close()
 
     return render_template('register.html')
+
+def is_valid_email(email):
+    pattern = re.compile(r"[^@]+@[^@]+\.[^@]+")
+    return bool(re.match(pattern, email))
 
 if __name__ == '__main__':
     app.run(debug=True)
