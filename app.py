@@ -77,9 +77,11 @@ def input_comment():
 
    return render_template('comment.html')
 
-@app.route('/login')
+@app.route("/login")
 def login():
-   return render_template('login.html')
+    member_list = Member.query.all()
+    return render_template("login.html", data = member_list)
+
 
 if __name__ == "__main__":
-   app.run(debug=True)
+    app.run(debug=True)
