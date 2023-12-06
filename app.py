@@ -12,9 +12,33 @@ app.config['SQLALCHEMY_DATABASE_URI'] =\
 
 db = SQLAlchemy(app)
 
+class Member(db.Model):
+    member_id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String, nullable=False)
+    password = db.Column(db.String, nullable=False)
+    name = db.Column(db.String, nullable=False)
+    boards = db.relationship('Board', backref='author', lazy=True)
+    comments = db.relationship('Comment', backref='author', lazy=True)
+
+class Board(db.Model):
+    board_id = db.Column(db.Integer, primary_key=True)
+    member_id = db.Column(db.Integer, db.ForeignKey('member.member_id'), nullable=True)
+    skill = db.Column(db.String, nullable=False)
+    secondTag = db.Column(db.String, nullable=True)
+    image_url = db.Column(db.String, nullable=True)
+    content = db.Column(db.String, nullable=False)
+    comments = db.relationship('Comment', backref='board', lazy=True)
+
+class Comment(db.Model):
+    comment_id = db.Column(db.Integer, primary_key=True)
+    member_id = db.Column(db.Integer, db.ForeignKey('member.member_id'), nullable=False)
+    board_id = db.Column(db.Integer, db.ForeignKey('board.board_id'), nullable=False)
+    content = db.Column(db.String, nullable=False)
+
 @app.route('/')
 def home():
-   return render_template('board.html')
+   board_list = Board.query.all()
+   return render_template('index.html', data=board_list)
 
 @app.route('/post/insert', methods=['POST'])
 def input_post():
@@ -23,7 +47,8 @@ def input_post():
    tags = request.form['tags']
    content = request.form['content']
 
-   board = dbClass.Board(
+   board = Board(
+      comment_id = 1,
       member_id =1,
       comment_id=1,
       skill=skill, 
@@ -42,7 +67,7 @@ def input_comment():
 
    content = request.form['content']
 
-   comment = dbClass.Comment(
+   comment = Comment(
       board_id = 3,
       member_id =1,
       content=content, 
