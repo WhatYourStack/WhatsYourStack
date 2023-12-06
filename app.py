@@ -48,7 +48,6 @@ def input_post():
    content = request.form['content']
 
    board = Board(
-      comment_id = 1,
       member_id =1,
       comment_id=1,
       skill=skill, 
@@ -71,7 +70,6 @@ def input_comment():
       board_id = 3,
       member_id =1,
       content=content, 
-   
       )
    db.session.add(comment)
    db.session.commit()
