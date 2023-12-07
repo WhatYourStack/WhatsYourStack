@@ -2,6 +2,7 @@ from xml.etree.ElementTree import Comment
 from flask import Flask, render_template, request, jsonify, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
+from flask_login import LoginManager, UserMixin, login_user, logout_user
 from sqlalchemy.orm import sessionmaker
 import os
 import re
@@ -15,18 +16,25 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(
     basedir, "database.db"
 )
 app.config["SECRET_KEY"] = "SUPER_SECRET_KEY"
-
+login_manager = LoginManager()
+login_manager.init_app(app)
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 
 
-class Member(db.Model):
+class Member(db.Model, UserMixin):
     member_id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String, nullable=False, unique=True)
     password = db.Column(db.String, nullable=False)
     name = db.Column(db.String, nullable=False)
     boards = db.relationship("Board", backref="board", lazy=True)
     # comments = db.relationship('Comment', backref='author', lazy=True)
+
+    def is_active(self):
+        return True
+
+    def get_id(self):
+        return self.member_id
 
 
 class Board(db.Model):
@@ -67,7 +75,7 @@ def search():
         return redirect(url_for("home"))
 
 
-@app.route('/post/edit', methods=['POST'])
+@app.route("/post/edit", methods=["POST"])
 def edit_post():
     memberId_receive = request.form["member_id"]
     board_receive = request.form["board_id"]
@@ -91,15 +99,14 @@ def edit_post():
     return redirect(url_for("home"))
 
 
-@app.route('/post/<int:id>')
+@app.route("/post/<int:id>")
 def select_post(id):
     board_list = session.query(Board, Member).join(Member).filter_by(member_id=id).all()
 
     return render_template("board.html", data=board_list)
 
 
-
-@app.route('/post/delete/<int:board_id>', methods=['POST'])
+@app.route("/post/delete/<int:board_id>", methods=["POST"])
 def delete_post(board_id):
     argId = board_id
     Board.query.filter_by(board_id=argId).delete()
@@ -142,6 +149,11 @@ def input_comment():
     return render_template("comment.html")
 
 
+@login_manager.user_loader
+def load_user(user_id):
+    return Member.query.get(int(user_id))
+
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
@@ -154,10 +166,8 @@ def login():
 
         if user and bcrypt.check_password_hash(user.password, password):
             # Successful login
+            login_user(user)  # Log in the user
             response = {"success": True}
-            session["user_id"] = user.member_id  # Add user ID to the session
-            session["user_name"] = user.name  # Add user name to the session
-
         else:
             # Failed login
             response = {"success": False}
@@ -173,6 +183,12 @@ engine = create_engine("sqlite:///" + os.path.join(basedir, "database.db"), echo
 
 Session = sessionmaker(bind=engine)
 session = Session()
+
+
+@app.route("/logout")
+def logout():
+    logout_user()
+    return redirect(url_for("home"))
 
 
 @app.route("/register", methods=["GET", "POST"])
