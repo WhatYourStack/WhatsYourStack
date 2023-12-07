@@ -62,6 +62,38 @@ def search():
             return render_template('search_results.html', message="검색 결과가 없습니다.")
     else:
         return redirect(url_for('home'))
+    
+@app.route('/member/edit' , methods=['POST'])
+def edit_post():
+    
+    board_receive = request.form['board_id']
+    email_receive = request.form['email']
+    skill_receive = request.form['skill']
+    secondTag_receive = request.form['secondTag']
+    content_receive = request.form['content']
+
+    print(board_receive, email_receive, skill_receive, secondTag_receive, content_receive)
+    return render_template('index.html')
+
+
+@app.route('/member/<int:id>')
+def select_post(id):
+  
+    board_list = session.query(Board,Member).join(Member).filter_by(member_id=id).all()
+    
+    return render_template('board.html' , data = board_list)
+
+
+@app.route('/member/delete/<int:member_id>', methods=['POST'])
+def delete_post(member_id):
+    
+    argId = member_id
+
+    Board.query.filter_by(member_id=argId).delete()
+    print(member_id)
+    #db.session.commit()
+    
+    return home()
 
 @app.route('/post/insert', methods=['GET', 'POST'])
 def input_post():
