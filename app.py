@@ -1,10 +1,12 @@
 from xml.etree.ElementTree import Comment
-from flask import Flask, render_template,request,jsonify
+from flask import Flask, render_template,request,jsonify,redirect
 # import dbClass
 from flask_sqlalchemy import SQLAlchemy
+from flask_bcrypt import Bcrypt
 from sqlalchemy.orm import sessionmaker
 import os, re
 from sqlalchemy import create_engine
+from sqlalchemy.exc import IntegrityError
 
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -13,6 +15,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] =\
       'sqlite:///' + os.path.join(basedir, 'database.db')
 
 db = SQLAlchemy(app)
+bcrypt = Bcrypt(app)
 
 class Member(db.Model):
     member_id = db.Column(db.Integer, primary_key=True)
@@ -94,17 +97,24 @@ def register():
         data = request.get_json()
         
         email = data.get('email')
-        password = data.get('password')
+        raw_password = data.get('password')
         name = data.get('name')
 
         if not is_valid_email(email):
             return jsonify({'message' : '올바른 메일 형식이 아닙니다.'})
         
-        new_member = Member(email=email, password=password, name=name)
+        hashed_password = bcrypt.generate_password_hash(raw_password).decode('utf-8')
+
+        new_member = Member(email=email, password=hashed_password, name=name)
         session.add(new_member)
         try:
             session.commit()
             print("회원가입이 완료되었습니다.")
+            return redirect('/login')
+        except IntegrityError as e:
+            session.rollback()
+            print(f"무결성 제약 조건 위반이 발생했습니다: {e}")
+            return jsonify({'message': '중복된 이메일 주소입니다.'})
         except Exception as e:
             session.rollback()
             print(f"에러 발생: {e}")
