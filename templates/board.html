@@ -1,254 +1,205 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <title>게시글 작성</title>
     <style>
-      .custom-header-wrap {
-        width: 100%;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-      }
+        .custom-header-wrap {
+            width: 100%;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
 
-      .custom-header {
-        width: 76%;
-        margin: auto;
-        margin-bottom: 50px;
-      }
+        .custom-header {
+            width: 76%;
+            margin: auto;
+            margin-bottom: 50px;
+        }
 
-      .custom-nav {
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-      }
+        .custom-nav {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+        }
 
-      .logo-wrap {
-        margin-left: 15px;
-      }
+        .logo-wrap {
+            margin-left: 15px;
+        }
 
-      .logo-img {
-        width: 100%;
-        margin-top: 10px;
-      }
+        .logo-img {
+            width: 100%;
+            margin-top: 10px;
+        }
 
-      .custom-navbar-list {
-        display: flex;
-        margin-top: 15px;
-      }
+        .custom-navbar-list {
+            display: flex;
+            margin-top: 15px;
+        }
 
-      .custom-nav-item {
-        list-style: none;
-        margin-right: 15px;
-      }
+        .custom-nav-item {
+            list-style: none;
+            margin-right: 15px;
+        }
 
-      .custom-nav-link {
-        text-decoration: none;
-        color: black;
-      }
+        .custom-nav-link {
+            text-decoration: none;
+            color: black;
+        }
 
-      .custom-nav-link:hover {
-        background-color: #ffe003;
-      }
+        .custom-nav-link:hover {
+            background-color: #ffe003;
+        }
 
-      .card_img_wrap {
-        height: 400px;
-        text-align: center;
-        overflow: hidden;
-      }
+        .card_img_wrap {
+            height: 400px;
+            text-align: center;
+            overflow: hidden;
+        }
 
-      body {
-        font-family: Arial, sans-serif;
-        background-color: #f4f4f4;
-        margin: 0;
-        padding: 0;
-      }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
 
-      .card-data {
-        width: 485px;
-        padding: 8px;
-        border-radius: 4px;
-        border: 1px solid #ccc;
-      }
+        .card-data {
+            width: 485px;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
 
-      .form-container {
-        width: 50%;
-        margin: 50px auto;
-        background-color: #fff;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        display: flex;
-        justify-content: center;
-      }
+        .form-container {
+            width: 50%;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: center;
+        }
 
-      .form-group {
-        margin-bottom: 10px;
-        width: 100%;
-      }
+        .form-group {
+            margin-bottom: 10px;
+            width: 100%;
+        }
 
-      .form-image {
-        margin-bottom: 20px;
-        height: 500px;
-        width: 500px;
-        display: flex;
-        justify-content: center;
-      }
+        .form-image {
+            margin-bottom: 20px;
+            height: 500px;
+            width: 500px;
+            display: flex;
+            justify-content: center;
+        }
 
-      .submit-button {
-        padding: 10px 20px;
-        background-color: #007bff;
-        color: #fff;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 16px;
-      }
+        .submit-button {
+            padding: 10px 20px;
+            background-color: black;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
 
-      .submit-button:hover {
-        background-color: #0056b3;
-      }
+        .submit-button:hover {
+            background-color: #ffe003;
+        }
     </style>
-  </head>
-  <body>
+</head>
+
+<body>
     <div class="custom-header-wrap">
-      <header class="custom-header">
-        <nav class="custom-nav">
-          <div class="logo-wrap">
-            <a href="/"
-              ><img src="/static/images/logo.png" alt="logo" class="logo-img"
-            /></a>
-          </div>
-          <ul class="custom-navbar-list">
-            <li class="custom-nav-item">
-              <a class="custom-nav-link" href="/login">로그인</a>
-            </li>
-            <li class="custom-nav-item">
-              <a class="custom-nav-link" href="/register">회원가입</a>
-            </li>
-          </ul>
-        </nav>
-      </header>
+        <header class="custom-header">
+            <nav class="custom-nav">
+                <div class="logo-wrap">
+                    <a href="/"><img src="/static/images/logo.png" alt="logo" class="logo-img" /></a>
+                </div>
+                <ul class="custom-navbar-list">
+                    <li class="custom-nav-item">
+                        <a class="custom-nav-link" href="/login">로그인</a>
+                    </li>
+                    <li class="custom-nav-item">
+                        <a class="custom-nav-link" href="/register">회원가입</a>
+                    </li>
+                </ul>
+            </nav>
+        </header>
     </div>
 
     <div class="form-container">
-      <form action="{{url_for('edit_post')}}" method="POST">
-        {%for board in data %}
-        <div class="form-image">
-          <img
-            src="{{board[0].image_url}}"
-            class="card-img-top"
-            alt="..."
-            height="100%"
-            width="100%"
-          />
-        </div>
+        <form action="{{url_for('edit_post')}}" method="POST">
+            {%for board in data %}
+            <div class="form-image">
+                <img src="{{board[0].image_url}}" class="card-img-top" alt="..." height="100%" width="100%" />
+            </div>
 
-        <div class="form-group">
-          <input
-            type="text"
-            name="email"
-            value="{{board[1].name}}"
-            class="card-data"
-          />
-        </div>
+            <div class="form-group">
+                <input type="text" name="email" value="{{board[1].name}}" class="card-data" />
+            </div>
 
-        <div class="form-group">
-          <input
-            type="hidden"
-            id="member_id"
-            name="member_id"
-            value="{{board[1].member_id}}"
-            class="card-data"
-          />
-        </div>
+            <div class="form-group">
+                <input type="hidden" id="member_id" name="member_id" value="{{board[1].member_id}}" class="card-data" />
+            </div>
 
-        <div class="form-group">
-          <input
-            type="hidden"
-            id="board_id"
-            name="board_id"
-            value="{{board[0].board_id}}"
-          />
-        </div>
+            <div class="form-group">
+                <input type="hidden" id="board_id" name="board_id" value="{{board[0].board_id}}" />
+            </div>
 
-        <input
-          type="hidden"
-          id="board_id"
-          name="board_id"
-          value="{{board[0].board_id}}"
-        />
+            <input type="hidden" id="board_id" name="board_id" value="{{board[0].board_id}}" />
 
-        <div class="form-group">
-          <input
-            type="text"
-            name="email"
-            value="{{board[1].email}}"
-            class="card-data"
-          />
-        </div>
+            <div class="form-group">
+                <input type="text" name="email" value="{{board[1].email}}" class="card-data" />
+            </div>
 
-        <div class="form-group">
-          <input
-            type="text"
-            name="skill"
-            value="{{board[0].skill}}"
-            class="card-data"
-          />
-        </div>
+            <div class="form-group">
+                <input type="text" name="skill" value="{{board[0].skill}}" class="card-data" />
+            </div>
 
-        <div class="form-group">
-          <input
-            type="text"
-            name="secondTag"
-            value="{{board[0].secondTag}}"
-            class="card-data"
-          />
-        </div>
+            <div class="form-group">
+                <input type="text" name="secondTag" value="{{board[0].secondTag}}" class="card-data" />
+            </div>
 
-        <div class="form-group">
-          <input
-            type="textarea"
-            name="content"
-            value="{{board[0].content}}"
-            class="card-data"
-          />
-        </div>
+            <div class="form-group">
+                <input type="textarea" name="content" value="{{board[0].content}}" class="card-data" />
+            </div>
 
-        <button type="submit" class="submit-button">수정</button>
-        <input
-          type="button"
-          value="삭제"
-          class="submit-button"
-          onclick="delete_post()"
-        />
-        {%endfor%}
-      </form>
+            <div class="button-wrap">
+                <button type="submit" class="submit-button">수정</button>
+                <input type="button" value="삭제" class="submit-button" onclick="delete_post()" />
+            </div>
+            {%endfor%}
+        </form>
 
-      <script>
-        function delete_post() {
-          let board_id = document.getElementById("board_id").value;
+        <script>
+            function delete_post() {
+                let board_id = document.getElementById("board_id").value;
 
-          let form = document.createElement("form");
-          form.setAttribute("method", "post");
-          form.setAttribute("action", `/member/delete/${board_id}`);
+                let form = document.createElement("form");
+                form.setAttribute("method", "post");
+                form.setAttribute("action", `/post/delete/${board_id}`);
 
-          document.body.append(form);
-          form.submit();
-        }
-      </script>
+                document.body.append(form);
+                form.submit();
+            }
+        </script>
 
-      <script>
-        document.addEventListener("DOMContentLoaded", function () {
-          var skillElements = document.querySelectorAll(".member-skill");
-          skillElements.forEach(function (span) {
-            span.textContent = span.textContent.toUpperCase();
-          });
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                var skillElements = document.querySelectorAll(".member-skill");
+                skillElements.forEach(function (span) {
+                    span.textContent = span.textContent.toUpperCase();
+                });
 
-          var tagElements = document.querySelectorAll(".member-tag");
-          tagElements.forEach(function (span) {
-            span.textContent = span.textContent.toUpperCase();
-          });
-        });
-      </script>
+                var tagElements = document.querySelectorAll(".member-tag");
+                tagElements.forEach(function (span) {
+                    span.textContent = span.textContent.toUpperCase();
+                });
+            });
+        </script>
     </div>
-  </body>
+</body>
+
 </html>

@@ -1,170 +1,200 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>게시글 작성</title>
-    <style>
-      /* styles.css */
 
-      /* body {
+<head>
+  <meta charset="UTF-8" />
+  <title>게시글 작성</title>
+  <style>
+    /* styles.css */
+
+    /* body {
         background-position: center;
         background-size: cover;
         color: black;
       } */
 
-      .custom-header-wrap {
-        width: 100%;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-      }
+    .custom-header-wrap {
+      width: 100%;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      background-color: #fff;
+    }
 
-      .custom-header {
-        width: 76%;
-        margin: auto;
-        margin-bottom: 50px;
-      }
+    .custom-header {
+      width: 76%;
+      margin: auto;
+      margin-bottom: 50px;
+    }
 
-      .custom-nav {
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-      }
+    .custom-nav {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+    }
 
-      .logo-wrap {
-        margin-left: 15px;
-      }
+    .logo-wrap {
+      margin-left: 15px;
+    }
 
-      .logo-img {
-        width: 100%;
-        margin-top: 10px;
-      }
+    .logo-img {
+      width: 100%;
+      margin-top: 10px;
+    }
 
-      .custom-navbar-list {
-        display: flex;
-        margin-top: 15px;
-      }
+    .custom-navbar-list {
+      display: flex;
+      margin-top: 15px;
+    }
 
-      .custom-nav-item {
-        list-style: none;
-        margin-right: 15px;
-      }
+    .custom-nav-item {
+      list-style: none;
+      margin-right: 15px;
+    }
 
-      .custom-nav-link {
-        text-decoration: none;
-        color: black;
-      }
+    .custom-nav-link {
+      text-decoration: none;
+      color: black;
+    }
 
-      .custom-nav-link:hover {
-        background-color: #ffe003;
-      }
+    .custom-nav-link:hover {
+      background-color: #ffe003;
+    }
 
-      .card_img_wrap {
-        height: 400px;
-        text-align: center;
-        overflow: hidden;
-      }
+    .card_img_wrap {
+      height: 400px;
+      text-align: center;
+      overflow: hidden;
+    }
 
-      body {
-        font-family: Arial, sans-serif;
-        background-color: #f4f4f4;
-        margin: 0;
-        padding: 0;
-      }
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
 
-      h1 {
-        text-align: center;
-      }
+    h1 {
+      text-align: center;
+    }
 
-      .form-container {
-        width: 50%;
-        margin: 50px auto;
-        background-color: #fff;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      }
+    .form-container {
+      width: 50%;
+      margin: 50px auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
 
-      .form-group {
-        margin-bottom: 20px;
-      }
+    .form-group {
+      margin-bottom: 20px;
+    }
 
-      label {
-        display: block;
-        margin-bottom: 6px;
-      }
+    label {
+      display: block;
+      margin-bottom: 6px;
+    }
 
-      input[type="text"],
-      textarea {
-        width: 100%;
-        padding: 8px;
-        border-radius: 4px;
-        border: 1px solid #ccc;
-      }
+    input[type="text"],
+    textarea {
+      width: 98%;
+      padding: 8px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
 
-      .submit-button {
-        padding: 10px 20px;
-        background-color: #007bff;
-        color: #fff;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 16px;
-      }
+    .submit-button {
+      padding: 10px 20px;
+      background-color: black;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
 
-      .submit-button:hover {
-        background-color: #0056b3;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="custom-header-wrap">
-      <header class="custom-header">
-        <nav class="custom-nav">
-          <div class="logo-wrap">
-            <a href="/"
-              ><img src="/static/images/logo.png" alt="logo" class="logo-img"
-            /></a>
-          </div>
-          <ul class="custom-navbar-list">
-            <li class="custom-nav-item">
-              <a class="custom-nav-link" href="/login">로그인</a>
-            </li>
-            <li class="custom-nav-item">
-              <a class="custom-nav-link" href="/register">회원가입</a>
-            </li>
-          </ul>
-        </nav>
-      </header>
-    </div>
+    .submit-button:hover {
+      background-color: #ffe003;
+    }
 
-    <div class="form-container">
-      <form action="{{url_for('input_post')}}" method="POST">
-        <div class="form-group">
-          <label for="photo_url">이미지 URL:</label>
-          <input type="text" id="photo_url" name="photoUrl" required />
+    .custom-footer-wrap {
+      width: 100%;
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+      margin-top: 50px;
+      position: fixed;
+      bottom: 0;
+      z-index: 9999;
+      background-color: #fff;
+      color: gray;
+      font-weight: 100;
+      text-align: center;
+    }
+
+    .custom-footer {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .github-logo {
+      width: 30px;
+      height: 30px;
+      margin: 16px 0 16px 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="custom-header-wrap">
+    <header class="custom-header">
+      <nav class="custom-nav">
+        <div class="logo-wrap">
+          <a href="/"><img src="/static/images/logo.png" alt="logo" class="logo-img" /></a>
         </div>
+        <ul class="custom-navbar-list">
+          <li class="custom-nav-item">
+            <a class="custom-nav-link" href="/login">로그인</a>
+          </li>
+          <li class="custom-nav-item">
+            <a class="custom-nav-link" href="/register">회원가입</a>
+          </li>
+        </ul>
+      </nav>
+    </header>
+  </div>
 
-        <div class="form-group">
-          <label for="skill_input">주특기:</label>
-          <input type="text" id="skill_input" name="skill" required />
-        </div>
+  <div class="form-container">
+    <form action="{{url_for('input_post')}}" method="POST">
+      <div class="form-group">
+        <label for="photo_url">이미지 URL:</label>
+        <input type="text" id="photo_url" name="photoUrl" required />
+      </div>
 
-        <div class="form-group">
-          <label for="tags_input">태그:</label>
-          <input type="text" id="tags_input" name="tags" required />
-        </div>
+      <div class="form-group">
+        <label for="skill_input">주특기:</label>
+        <input type="text" id="skill_input" name="skill" required />
+      </div>
 
-        <div class="form-group">
-          <label for="content_input">글 내용:</label><br />
-          <textarea
-            id="content_input"
-            name="content"
-            rows="4"
-            cols="50"
-          ></textarea>
-        </div>
+      <div class="form-group">
+        <label for="tags_input">태그:</label>
+        <input type="text" id="tags_input" name="tags" required />
+      </div>
 
-        <input type="submit" value="게시글 작성" class="submit-button" />
-      </form>
-    </div>
-  </body>
+      <div class="form-group">
+        <label for="content_input">글 내용:</label><br />
+        <textarea id="content_input" name="content" rows="4" cols="50"></textarea>
+      </div>
+
+      <input type="submit" value="게시글 작성" class="submit-button" />
+    </form>
+  </div>
+
+  <div class="custom-footer-wrap">
+    <footer class="custom-footer">
+      <p>Project By 강다온, 김다보미, 김명찬, 박성진, 이승배, 현민영</p>
+      <a href="https://github.com/WhatYourStack/WhatsYourStack" target="_blank"><img
+          src="/static/images/github-logo.png" alt="github-logo" class="github-logo" /></a>
+    </footer>
+  </div>
+</body>
+
 </html>
