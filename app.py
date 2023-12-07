@@ -1,8 +1,11 @@
 from xml.etree.ElementTree import Comment
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify,redirect, url_for
 from werkzeug.security import check_password_hash
 from flask_sqlalchemy import SQLAlchemy
-import os
+from sqlalchemy.orm import sessionmaker
+import os, re
+from sqlalchemy import create_engine
+from sqlalchemy import func
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)
@@ -45,6 +48,20 @@ def home():
     board_list = Board.query.all()
     return render_template("index.html", data=board_list)
 
+@app.route('/search', methods=['GET'])
+def search():
+    search_query = request.args.get('query', '').lower()
+    if search_query:
+        search_pattern = f"%{search_query}%"
+        results = Board.query.filter(func.lower(Board.skill).like(search_pattern)).all()
+
+        if results:
+            return render_template('search_results.html', boards=results)
+        else:
+            return render_template('search_results.html', message="검색 결과가 없습니다.")
+    else:
+        return redirect(url_for('home'))
+
 
 @app.route("/post/insert", methods=["POST"])
 def input_post():
@@ -65,6 +82,32 @@ def input_post():
     db.session.commit()
 
     return render_template("board.html")
+
+
+@app.route('/post/insert', methods=['GET', 'POST'])
+def input_post():
+    if request.method == 'POST':
+        photo = request.form['photoUrl']
+        skill = request.form['skill']
+        tags = request.form['tags']
+        content = request.form['content']
+
+        board = Board(
+            member_id=1,
+            comment_id=1,
+            skill=skill,
+            secondTag=tags,
+            content=content,
+            image_url=photo
+        )
+        db.session.add(board)
+        db.session.commit()
+        return redirect(url_for('index.html'))
+    else:
+        return render_template('board.html')
+        
+  
+>>>>>>> a224526d7ada89929a15cef7a4304d434fdfd50d
 
 
 @app.route("/post/comment", methods=["POST"])
@@ -105,6 +148,40 @@ def login():
     member_list = Member.query.all()
     return render_template("login.html", data=member_list)
 
+
+engine = create_engine('sqlite:///' + os.path.join(basedir, 'database.db'), echo=True)
+
+Session = sessionmaker(bind=engine)
+session = Session()
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        data = request.get_json()
+        
+        email = data.get('email')
+        password = data.get('password')
+        name = data.get('name')
+
+        if not is_valid_email(email):
+            return jsonify({'message' : '올바른 메일 형식이 아닙니다.'})
+        
+        new_member = Member(email=email, password=password, name=name)
+        session.add(new_member)
+        try:
+            session.commit()
+            print("회원가입이 완료되었습니다.")
+        except Exception as e:
+            session.rollback()
+            print(f"에러 발생: {e}")
+        finally:
+            session.close()
+
+    return render_template('register.html')
+
+def is_valid_email(email):
+    pattern = re.compile(r"[^@]+@[^@]+\.[^@]+")
+    return bool(re.match(pattern, email))
 
 if __name__ == "__main__":
     app.run(debug=True)
