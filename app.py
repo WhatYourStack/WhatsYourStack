@@ -28,7 +28,7 @@ class Member(db.Model):
 
 
 class Board(db.Model):
-    board_id = db.Column(db.Integer, primary_key=True,autoincrement=True)
+    board_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     member_id = db.Column(db.Integer, db.ForeignKey(
         'member.member_id'), nullable=True)
     skill = db.Column(db.String, nullable=False)
