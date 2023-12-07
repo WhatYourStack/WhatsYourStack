@@ -1,9 +1,10 @@
 from xml.etree.ElementTree import Comment
-from flask import Flask, render_template,request,jsonify,redirect, url_for
+from flask import Flask, render_template, request, jsonify, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from sqlalchemy.orm import sessionmaker
-import os, re
+import os
+import re
 from sqlalchemy import create_engine
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import func
@@ -27,7 +28,7 @@ class Member(db.Model):
 
 
 class Board(db.Model):
-    board_id = db.Column(db.Integer, primary_key=True,autoincrement=True)
+    board_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     member_id = db.Column(db.Integer, db.ForeignKey(
         'member.member_id'), nullable=True)
     skill = db.Column(db.String, nullable=False)
@@ -51,12 +52,14 @@ def home():
     board_list = Board.query.all()
     return render_template('index.html', data=board_list)
 
+
 @app.route('/search', methods=['GET'])
 def search():
     search_query = request.args.get('query', '').lower()
     if search_query:
         search_pattern = f"%{search_query}%"
-        results = Board.query.filter(func.lower(Board.skill).like(search_pattern)).all()
+        results = Board.query.filter(func.lower(
+            Board.skill).like(search_pattern)).all()
 
         if results:
             return render_template('search_results.html', boards=results)
@@ -64,38 +67,42 @@ def search():
             return render_template('search_results.html', message="검색 결과가 없습니다.")
     else:
         return redirect(url_for('home'))
-    
-@app.route('/member/edit' , methods=['POST'])
+
+
+@app.route('/member/edit', methods=['POST'])
 def edit_post():
-    
+
     board_receive = request.form['board_id']
     email_receive = request.form['email']
     skill_receive = request.form['skill']
     secondTag_receive = request.form['secondTag']
     content_receive = request.form['content']
 
-    print(board_receive, email_receive, skill_receive, secondTag_receive, content_receive)
+    print(board_receive, email_receive, skill_receive,
+          secondTag_receive, content_receive)
     return render_template('index.html')
 
 
 @app.route('/member/<int:id>')
 def select_post(id):
-  
-    board_list = session.query(Board,Member).join(Member).filter_by(member_id=id).all()
-    
-    return render_template('board.html' , data = board_list)
+
+    board_list = session.query(Board, Member).join(
+        Member).filter_by(member_id=id).all()
+
+    return render_template('board.html', data=board_list)
 
 
 @app.route('/member/delete/<int:member_id>', methods=['POST'])
 def delete_post(member_id):
-    
+
     argId = member_id
 
     Board.query.filter_by(member_id=argId).delete()
     print(member_id)
-    #db.session.commit()
-    
+    # db.session.commit()
+
     return home()
+
 
 @app.route('/post/insert', methods=['GET', 'POST'])
 def input_post():
@@ -116,9 +123,8 @@ def input_post():
         db.session.commit()
         return redirect(url_for('home'))
     else:
-        return render_template('board.html')
-        
-  
+        return render_template('write.html')
+
 
 @app.route('/post/comment', methods=['POST'])
 def input_comment():
@@ -139,27 +145,30 @@ def input_comment():
 @app.route("/login")
 def login():
     member_list = Member.query.all()
-    return render_template("login.html", data = member_list)
+    return render_template("login.html", data=member_list)
 
 
-engine = create_engine('sqlite:///' + os.path.join(basedir, 'database.db'), echo=True)
+engine = create_engine(
+    'sqlite:///' + os.path.join(basedir, 'database.db'), echo=True)
 
 Session = sessionmaker(bind=engine)
 session = Session()
+
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
         data = request.get_json()
-        
+
         email = data.get('email')
         raw_password = data.get('password')
         name = data.get('name')
 
         if not is_valid_email(email):
-            return jsonify({'message' : '올바른 메일 형식이 아닙니다.'})
-        
-        hashed_password = bcrypt.generate_password_hash(raw_password).decode('utf-8')
+            return jsonify({'message': '올바른 메일 형식이 아닙니다.'})
+
+        hashed_password = bcrypt.generate_password_hash(
+            raw_password).decode('utf-8')
 
         new_member = Member(email=email, password=hashed_password, name=name)
         session.add(new_member)
@@ -179,9 +188,11 @@ def register():
 
     return render_template('register.html')
 
+
 def is_valid_email(email):
     pattern = re.compile(r"[^@]+@[^@]+\.[^@]+")
     return bool(re.match(pattern, email))
+
 
 if __name__ == "__main__":
     app.run(debug=True)
