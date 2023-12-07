@@ -112,10 +112,10 @@
         <ul class="list-group list-group-flush">
           <input type="hidden" id="member_id" name="member_id" value="{{board[1].member_id}}">
           <input type="hidden" id="board_id" name="board_id" value="{{board[0].board_id}}">
-          <input type="text" name="email" value="{{board[1].email}}" readonly>
-          <input type="text" name="skill" value="{{board[0].skill}}" readonly>
-          <input type="text" name="secondTag" value="{{board[0].secondTag}}" readonly>
-          <input type="textarea" name="content" value="{{board[0].content}}" readonly>
+          <input type="text" name="email" value="{{board[1].email}}" >
+          <input type="text" name="skill" value="{{board[0].skill}}" >
+          <input type="text" name="secondTag" value="{{board[0].secondTag}}" >
+          <input type="textarea" name="content" value="{{board[0].content}}" >
           <div><button type="submit">수정</button>
           <input type="button" value="삭제" onclick="delete_post()"></button></div>
 
