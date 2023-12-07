@@ -1,5 +1,5 @@
 from xml.etree.ElementTree import Comment
-from flask import Flask, render_template, request, jsonify, redirect, url_for
+from flask import Flask, render_template, request, jsonify, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from sqlalchemy.orm import sessionmaker
@@ -142,10 +142,26 @@ def input_comment():
     return render_template('comment.html')
 
 
-@app.route("/login")
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-    member_list = Member.query.all()
-    return render_template("login.html", data=member_list)
+
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+
+        # 입력된 이메일에 해당하는 회원을 데이터베이스에서 찾습니다.
+        user = Member.query.filter_by(email=email).first()
+
+        if user and bcrypt.check_password_hash(user.password, password):
+            # If passwords match, create a session for the user
+            session['user_id'] = user.member_id
+            # Redirect to the home page or any other desired page after successful login
+            return redirect('/')
+        else:
+            message = '이메일 또는 비밀번호가 잘못되었습니다.'
+            return render_template('login.html', message=message)
+
+    return render_template('login.html')
 
 
 engine = create_engine(
@@ -195,4 +211,4 @@ def is_valid_email(email):
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run('0.0.0.0', port=5001, debug=True)
