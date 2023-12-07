@@ -1,13 +1,12 @@
 from xml.etree.ElementTree import Comment
-from flask import Flask, render_template,request,jsonify,redirect
-# import dbClass
+from flask import Flask, render_template,request,jsonify,redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from sqlalchemy.orm import sessionmaker
 import os, re
 from sqlalchemy import create_engine
 from sqlalchemy.exc import IntegrityError
-
+from sqlalchemy import func
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)
@@ -23,19 +22,19 @@ class Member(db.Model):
     email = db.Column(db.String, nullable=False, unique=True)
     password = db.Column(db.String, nullable=False)
     name = db.Column(db.String, nullable=False)
-    boards = db.relationship('Board', backref='author', lazy=True)
-    comments = db.relationship('Comment', backref='author', lazy=True)
+    boards = db.relationship('Board', backref='board', lazy=True)
+    # comments = db.relationship('Comment', backref='author', lazy=True)
 
 
 class Board(db.Model):
-    board_id = db.Column(db.Integer, primary_key=True)
+    board_id = db.Column(db.Integer, primary_key=True,autoincrement=True)
     member_id = db.Column(db.Integer, db.ForeignKey(
         'member.member_id'), nullable=True)
     skill = db.Column(db.String, nullable=False)
     secondTag = db.Column(db.String, nullable=True)
     image_url = db.Column(db.String, nullable=True)
     content = db.Column(db.String, nullable=False)
-    comments = db.relationship('Comment', backref='board', lazy=True)
+    # comments = db.relationship('Comment', backref='comment', lazy=True)
 
 
 class Comment(db.Model):
@@ -52,26 +51,41 @@ def home():
     board_list = Board.query.all()
     return render_template('index.html', data=board_list)
 
+@app.route('/search', methods=['GET'])
+def search():
+    search_query = request.args.get('query', '').lower()
+    if search_query:
+        search_pattern = f"%{search_query}%"
+        results = Board.query.filter(func.lower(Board.skill).like(search_pattern)).all()
 
-@app.route('/post/insert', methods=['POST'])
+        if results:
+            return render_template('search_results.html', boards=results)
+        else:
+            return render_template('search_results.html', message="검색 결과가 없습니다.")
+    else:
+        return redirect(url_for('home'))
+
+@app.route('/post/insert', methods=['GET', 'POST'])
 def input_post():
-    photo = request.form['photoUrl']
-    skill = request.form['skill']
-    tags = request.form['tags']
-    content = request.form['content']
+    if request.method == 'POST':
+        photo = request.form['photoUrl']
+        skill = request.form['skill']
+        tags = request.form['tags']
+        content = request.form['content']
 
-    board = Board(
-        member_id=1,
-        comment_id=1,
-        skill=skill,
-        secondTag=tags,
-        content=content,
-        image_url=photo
-    )
-    db.session.add(board)
-    db.session.commit()
-
-    return render_template('board.html')
+        board = Board(
+            member_id=1,
+            skill=skill,
+            secondTag=tags,
+            content=content,
+            image_url=photo
+        )
+        db.session.add(board)
+        db.session.commit()
+        return redirect(url_for('home'))
+    else:
+        return render_template('board.html')
+        
   
 
 @app.route('/post/comment', methods=['POST'])
