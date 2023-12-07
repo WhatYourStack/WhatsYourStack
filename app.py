@@ -3,6 +3,7 @@ from flask import Flask, render_template, request, jsonify, redirect, url_for, s
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, UserMixin, login_user, logout_user
+from flask_login import current_user
 from sqlalchemy.orm import sessionmaker
 import os
 import re
@@ -126,8 +127,12 @@ def input_post():
         tags = request.form["tags"]
         content = request.form["content"]
 
+        member_id = current_user.get_id()
+
+        print("user나오니 : ", member_id)
+
         board = Board(
-            member_id=1, skill=skill, secondTag=tags, content=content, image_url=photo
+            member_id=member_id, skill=skill, secondTag=tags, content=content, image_url=photo
         )
         db.session.add(board)
         db.session.commit()
