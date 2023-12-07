@@ -69,7 +69,7 @@ def search():
         return redirect(url_for('home'))
 
 
-@app.route('/member/edit', methods=['POST'])
+@app.route('/post/edit', methods=['POST'])
 def edit_post():
 
     memberId_receive = request.form['member_id']
@@ -90,7 +90,7 @@ def edit_post():
     return redirect(url_for('home'))
 
 
-@app.route('/member/<int:id>')
+@app.route('/post/<int:id>')
 def select_post(id):
 
     board_list = session.query(Board, Member).join(Member).filter_by(member_id=id).all()
@@ -99,7 +99,7 @@ def select_post(id):
 
 
 
-@app.route('/member/delete/<int:board_id>', methods=['POST'])
+@app.route('/post/delete/<int:board_id>', methods=['POST'])
 def delete_post(board_id):
 
     argId = board_id
