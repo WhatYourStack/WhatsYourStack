@@ -3,8 +3,12 @@
 
 <head>
     <meta charset="UTF-8" />
-    <title>게시글 작성</title>
+    <title>자기소개 작성</title>
     <style>
+        body {
+            font-family: 'Arial', sans-serif;
+        }
+
         .custom-header-wrap {
             width: 100%;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
@@ -133,37 +137,37 @@
         <form action="{{url_for('edit_post')}}" method="POST">
             {%for board in data %}
             <div class="form-image">
-                <img src="{{board[0].image_url}}" class="card-img-top" alt="..." height="100%" width="100%" />
+                <img src="{{board[1].image_url}}" class="card-img-top" alt="..." height="100%" width="100%" />
             </div>
 
             <div class="form-group">
-                <input type="text" name="email" value="{{board[1].name}}" class="card-data" />
+                <input type="text" name="email" value="{{board[0].name}}" class="card-data" />
             </div>
 
             <div class="form-group">
-                <input type="hidden" id="member_id" name="member_id" value="{{board[1].member_id}}" class="card-data" />
+                <input type="hidden" id="member_id" name="member_id" value="{{board[0].member_id}}" class="card-data" />
             </div>
 
             <div class="form-group">
-                <input type="hidden" id="board_id" name="board_id" value="{{board[0].board_id}}" />
+                <input type="hidden" id="board_id" name="board_id" value="{{board[1].board_id}}" />
             </div>
 
-            <input type="hidden" id="board_id" name="board_id" value="{{board[0].board_id}}" />
+            <input type="hidden" id="board_id" name="board_id" value="{{board[1].board_id}}" />
 
             <div class="form-group">
-                <input type="text" name="email" value="{{board[1].email}}" class="card-data" />
-            </div>
-
-            <div class="form-group">
-                <input type="text" name="skill" value="{{board[0].skill}}" class="card-data" />
+                <input type="text" name="email" value="{{board[0].email}}" class="card-data" />
             </div>
 
             <div class="form-group">
-                <input type="text" name="secondTag" value="{{board[0].secondTag}}" class="card-data" />
+                <input type="text" name="skill" value="{{board[1].skill}}" class="card-data" />
             </div>
 
             <div class="form-group">
-                <input type="textarea" name="content" value="{{board[0].content}}" class="card-data" />
+                <input type="text" name="secondTag" value="{{board[1].secondTag}}" class="card-data" />
+            </div>
+
+            <div class="form-group">
+                <input type="textarea" name="content" value="{{board[1].content}}" class="card-data" />
             </div>
 
             <div class="button-wrap">

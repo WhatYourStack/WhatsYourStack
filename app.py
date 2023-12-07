@@ -101,14 +101,16 @@ def edit_post():
 
 @app.route("/post/<int:id>")
 def select_post(id):
-    board_list = session.query(Board, Member).join(Member).filter_by(member_id=id).all()
 
+    board_list = session.query(Member,Board).join(Board).filter_by(board_id=id).all()
+    
     return render_template("board.html", data=board_list)
 
 
 @app.route("/post/delete/<int:board_id>", methods=["POST"])
 def delete_post(board_id):
     argId = board_id
+
     Board.query.filter_by(board_id=argId).delete()
 
     db.session.commit()
