@@ -1,41 +1,33 @@
 from xml.etree.ElementTree import Comment
-from flask import Flask, render_template, request, jsonify, redirect, url_for
-from werkzeug.security import check_password_hash
+
+from flask import Flask, render_template,request,jsonify,redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import sessionmaker
-import os
-import re
+import os, re
 from sqlalchemy import create_engine
 from sqlalchemy import func
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(
-    basedir, "database.db"
-)
+app.config['SQLALCHEMY_DATABASE_URI'] =\
+    'sqlite:///' + os.path.join(basedir, 'database.db')
 
 db = SQLAlchemy(app)
 
 
 class Member(db.Model):
-    member_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    member_id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String, nullable=False, unique=True)
     password = db.Column(db.String, nullable=False)
-    password_hash = db.Column(db.String, nullable=False)
     name = db.Column(db.String, nullable=False)
-    boards = db.relationship('Board', backref='board', lazy=True)
-    # comments = db.relationship('Comment', backref='comment', lazy=True)
+    boards = db.relationship('Board', backref='author', lazy=True)
+    comments = db.relationship('Comment', backref='author', lazy=True)
 
 
 class Board(db.Model):
-    board_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    board_id = db.Column(db.Integer, primary_key=True,autoincrement=True)
     member_id = db.Column(db.Integer, db.ForeignKey(
         'member.member_id'), nullable=True)
-
-
-class Board(db.Model):
-    board_id = db.Column(db.Integer, primary_key=True)
-    member_id = db.Column(db.Integer, db.ForeignKey("member.member_id"), nullable=True)
     skill = db.Column(db.String, nullable=False)
     secondTag = db.Column(db.String, nullable=True)
     image_url = db.Column(db.String, nullable=True)
@@ -52,20 +44,17 @@ class Board(db.Model):
 #     content = db.Column(db.String, nullable=False)
 
 
-
-@app.route("/")
+@app.route('/')
 def home():
     board_list = Board.query.all()
-    return render_template("index.html", data=board_list)
-
+    return render_template('index.html', data=board_list)
 
 @app.route('/search', methods=['GET'])
 def search():
     search_query = request.args.get('query', '').lower()
     if search_query:
         search_pattern = f"%{search_query}%"
-        results = Board.query.filter(func.lower(
-            Board.skill).like(search_pattern)).all()
+        results = Board.query.filter(func.lower(Board.skill).like(search_pattern)).all()
 
         if results:
             return render_template('search_results.html', boards=results)
@@ -74,7 +63,6 @@ def search():
     else:
         return redirect(url_for('home'))
 
-      
 @app.route('/post/insert', methods=['GET', 'POST'])
 def input_post():
     if request.method == 'POST':
@@ -85,7 +73,6 @@ def input_post():
 
         board = Board(
             member_id=1,
-            # comment_id=1,
             skill=skill,
             secondTag=tags,
             content=content,
@@ -94,14 +81,15 @@ def input_post():
         db.session.add(board)
         db.session.commit()
         return redirect(url_for('home'))
-        # return render_template('index.html')
     else:
         return render_template('board.html')
+        
+  
 
-
-@app.route("/post/comment", methods=["POST"])
+@app.route('/post/comment', methods=['POST'])
 def input_comment():
-    content = request.form["content"]
+
+    content = request.form['content']
 
     comment = Comment(
         board_id=3,
@@ -111,52 +99,32 @@ def input_comment():
     db.session.add(comment)
     db.session.commit()
 
-    return render_template("comment.html")
+    return render_template('comment.html')
 
 
-@app.route("/login", methods=["GET", "POST"])
+@app.route("/login")
 def login():
-    if request.method == "POST":
-        data = request.json
-        email = data.get("email")
-        password = data.get("password")
-
-        # Check if the entered credentials are valid
-        user = Member.query.filter_by(email=email).first()
-
-        if user and check_password_hash(user.password_hash, password):
-            # Successful login
-            response = {"success": True}
-        else:
-            # Failed login
-            response = {"success": False}
-
-        return jsonify(response)
-
-    # For GET requests, render the login form
     member_list = Member.query.all()
-    return render_template("login.html", data=member_list)
+    return render_template("login.html", data = member_list)
 
 
-engine = create_engine(
-    'sqlite:///' + os.path.join(basedir, 'database.db'), echo=True)
+engine = create_engine('sqlite:///' + os.path.join(basedir, 'database.db'), echo=True)
 
 Session = sessionmaker(bind=engine)
 session = Session()
-
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
         data = request.get_json()
-
+        
         email = data.get('email')
         password = data.get('password')
         name = data.get('name')
 
         if not is_valid_email(email):
-            return jsonify({'message': '올바른 메일 형식이 아닙니다.'})
-
+            return jsonify({'message' : '올바른 메일 형식이 아닙니다.'})
+        
         new_member = Member(email=email, password=password, name=name)
         session.add(new_member)
         try:
@@ -170,11 +138,9 @@ def register():
 
     return render_template('register.html')
 
-
 def is_valid_email(email):
     pattern = re.compile(r"[^@]+@[^@]+\.[^@]+")
     return bool(re.match(pattern, email))
-
 
 if __name__ == "__main__":
     app.run(debug=True)
