@@ -11,8 +11,10 @@ from sqlalchemy import func
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] =\
-    'sqlite:///' + os.path.join(basedir, 'database.db')
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(
+    basedir, "database.db"
+)
+app.config["SECRET_KEY"] = "SUPER_SECRET_KEY"
 
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
@@ -23,14 +25,13 @@ class Member(db.Model):
     email = db.Column(db.String, nullable=False, unique=True)
     password = db.Column(db.String, nullable=False)
     name = db.Column(db.String, nullable=False)
-    boards = db.relationship('Board', backref='board', lazy=True)
+    boards = db.relationship("Board", backref="board", lazy=True)
     # comments = db.relationship('Comment', backref='author', lazy=True)
 
 
 class Board(db.Model):
     board_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    member_id = db.Column(db.Integer, db.ForeignKey(
-        'member.member_id'), nullable=True)
+    member_id = db.Column(db.Integer, db.ForeignKey("member.member_id"), nullable=True)
     skill = db.Column(db.String, nullable=False)
     secondTag = db.Column(db.String, nullable=True)
     image_url = db.Column(db.String, nullable=True)
@@ -40,102 +41,94 @@ class Board(db.Model):
 
 class Comment(db.Model):
     comment_id = db.Column(db.Integer, primary_key=True)
-    member_id = db.Column(db.Integer, db.ForeignKey(
-        'member.member_id'), nullable=False)
-    board_id = db.Column(db.Integer, db.ForeignKey(
-        'board.board_id'), nullable=False)
+    member_id = db.Column(db.Integer, db.ForeignKey("member.member_id"), nullable=False)
+    board_id = db.Column(db.Integer, db.ForeignKey("board.board_id"), nullable=False)
     content = db.Column(db.String, nullable=False)
 
 
-@app.route('/')
+@app.route("/")
 def home():
     board_list = Board.query.all()
-    return render_template('index.html', data=board_list)
+    return render_template("index.html", data=board_list)
 
 
-@app.route('/search', methods=['GET'])
+@app.route("/search", methods=["GET"])
 def search():
-    search_query = request.args.get('query', '').lower()
+    search_query = request.args.get("query", "").lower()
     if search_query:
         search_pattern = f"%{search_query}%"
-        results = Board.query.filter(func.lower(
-            Board.skill).like(search_pattern)).all()
+        results = Board.query.filter(func.lower(Board.skill).like(search_pattern)).all()
 
         if results:
-            return render_template('search_results.html', boards=results)
+            return render_template("search_results.html", boards=results)
         else:
-            return render_template('search_results.html', message="검색 결과가 없습니다.")
+            return render_template("search_results.html", message="검색 결과가 없습니다.")
     else:
-        return redirect(url_for('home'))
+        return redirect(url_for("home"))
 
 
-@app.route('/member/edit', methods=['POST'])
+@app.route("/member/edit", methods=["POST"])
 def edit_post():
+    memberId_receive = request.form["member_id"]
+    board_receive = request.form["board_id"]
+    email_receive = request.form["email"]
+    skill_receive = request.form["skill"]
+    secondTag_receive = request.form["secondTag"]
+    content_receive = request.form["content"]
 
-    memberId_receive = request.form['member_id']
-    board_receive = request.form['board_id']
-    email_receive = request.form['email']
-    skill_receive = request.form['skill']
-    secondTag_receive = request.form['secondTag']
-    content_receive = request.form['content']
+    Member.query.filter_by(member_id=memberId_receive).update({"email": email_receive})
 
-    
-    Member.query.filter_by(member_id=memberId_receive).update({"email" : email_receive})
+    Board.query.filter_by(board_id=board_receive).update(
+        {
+            "skill": skill_receive,
+            "secondTag": secondTag_receive,
+            "content": content_receive,
+        }
+    )
 
-    Board.query.filter_by(board_id=board_receive).update({
-         "skill":skill_receive,"secondTag":secondTag_receive,"content":content_receive})
-    
     db.session.commit()
-    
-    return redirect(url_for('home'))
+
+    return redirect(url_for("home"))
 
 
-@app.route('/member/<int:id>')
+@app.route("/member/<int:id>")
 def select_post(id):
-
     board_list = session.query(Board, Member).join(Member).filter_by(member_id=id).all()
 
-    return render_template('board.html', data=board_list)
+    return render_template("board.html", data=board_list)
 
 
-
-@app.route('/member/delete/<int:board_id>', methods=['POST'])
+@app.route("/member/delete/<int:board_id>", methods=["POST"])
 def delete_post(board_id):
-
     argId = board_id
     Board.query.filter_by(board_id=argId).delete()
-    
+
     db.session.commit()
 
-    return redirect(url_for('home'))
+    return redirect(url_for("home"))
 
 
-@app.route('/post/insert', methods=['GET', 'POST'])
+@app.route("/post/insert", methods=["GET", "POST"])
 def input_post():
-    if request.method == 'POST':
-        photo = request.form['photoUrl']
-        skill = request.form['skill']
-        tags = request.form['tags']
-        content = request.form['content']
+    if request.method == "POST":
+        photo = request.form["photoUrl"]
+        skill = request.form["skill"]
+        tags = request.form["tags"]
+        content = request.form["content"]
 
         board = Board(
-            member_id=1,
-            skill=skill,
-            secondTag=tags,
-            content=content,
-            image_url=photo
+            member_id=1, skill=skill, secondTag=tags, content=content, image_url=photo
         )
         db.session.add(board)
         db.session.commit()
-        return redirect(url_for('home'))
+        return redirect(url_for("home"))
     else:
-        return render_template('write.html')
+        return render_template("write.html")
 
 
-@app.route('/post/comment', methods=['POST'])
+@app.route("/post/comment", methods=["POST"])
 def input_comment():
-
-    content = request.form['content']
+    content = request.form["content"]
 
     comment = Comment(
         board_id=3,
@@ -145,7 +138,7 @@ def input_comment():
     db.session.add(comment)
     db.session.commit()
 
-    return render_template('comment.html')
+    return render_template("comment.html")
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -161,8 +154,9 @@ def login():
         if user and bcrypt.check_password_hash(user.password, password):
             # Successful login
             response = {"success": True}
-            
-        
+            session["user_id"] = user.member_id  # Add user ID to the session
+            session["user_name"] = user.name  # Add user name to the session
+
         else:
             # Failed login
             response = {"success": False}
@@ -174,45 +168,43 @@ def login():
     return render_template("login.html", data=member_list)
 
 
-engine = create_engine(
-    'sqlite:///' + os.path.join(basedir, 'database.db'), echo=True)
+engine = create_engine("sqlite:///" + os.path.join(basedir, "database.db"), echo=True)
 
 Session = sessionmaker(bind=engine)
 session = Session()
 
 
-@app.route('/register', methods=['GET', 'POST'])
+@app.route("/register", methods=["GET", "POST"])
 def register():
-    if request.method == 'POST':
+    if request.method == "POST":
         data = request.get_json()
 
-        email = data.get('email')
-        raw_password = data.get('password')
-        name = data.get('name')
+        email = data.get("email")
+        raw_password = data.get("password")
+        name = data.get("name")
 
         if not is_valid_email(email):
-            return jsonify({'message': '올바른 메일 형식이 아닙니다.'})
+            return jsonify({"message": "올바른 메일 형식이 아닙니다."})
 
-        hashed_password = bcrypt.generate_password_hash(
-            raw_password).decode('utf-8')
+        hashed_password = bcrypt.generate_password_hash(raw_password).decode("utf-8")
 
         new_member = Member(email=email, password=hashed_password, name=name)
         session.add(new_member)
         try:
             session.commit()
             print("회원가입이 완료되었습니다.")
-            return redirect('/login')
+            return redirect("/login")
         except IntegrityError as e:
             session.rollback()
             print(f"무결성 제약 조건 위반이 발생했습니다: {e}")
-            return jsonify({'message': '중복된 이메일 주소입니다.'})
+            return jsonify({"message": "중복된 이메일 주소입니다."})
         except Exception as e:
             session.rollback()
             print(f"에러 발생: {e}")
         finally:
             session.close()
 
-    return render_template('register.html')
+    return render_template("register.html")
 
 
 def is_valid_email(email):
@@ -221,4 +213,4 @@ def is_valid_email(email):
 
 
 if __name__ == "__main__":
-    app.run('0.0.0.0', port=5001, debug=True)
+    app.run("0.0.0.0", port=5001, debug=True)

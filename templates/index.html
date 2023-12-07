@@ -134,7 +134,7 @@
                     <a href="/"><img src="/static/images/logo.png" alt="logo" class="logo-img" /></a>
                 </div>
                 <ul class="custom-navbar-list">
-                    {% if session['logged_in'] %}
+                    {% if session['member_id'] %}
                     <li class="custom-nav-item">
                         <a class="custom-nav-link" href="/">로그아웃</a>
                     </li>
