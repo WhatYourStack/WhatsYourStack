@@ -213,9 +213,11 @@
             {% endfor %}
         </div>
         <!-- 게시글 작성 -->
+        {% if current_user.is_authenticated %}
         <div class="fixed-button">
             <a href="/post/insert" class="round-button">+</a>
         </div>
+        {% endif %}
     </section>
 
     <div class="custom-footer-wrap">
