@@ -142,26 +142,28 @@ def input_comment():
     return render_template('comment.html')
 
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route("/login", methods=["GET", "POST"])
 def login():
+    if request.method == "POST":
+        data = request.json
+        email = data.get("email")
+        password = data.get("password")
 
-    if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
-
-        # 입력된 이메일에 해당하는 회원을 데이터베이스에서 찾습니다.
+        # Check if the entered credentials are valid
         user = Member.query.filter_by(email=email).first()
 
         if user and bcrypt.check_password_hash(user.password, password):
-            # If passwords match, create a session for the user
-            session['user_id'] = user.member_id
-            # Redirect to the home page or any other desired page after successful login
-            return redirect('/')
+            # Successful login
+            response = {"success": True}
         else:
-            message = '이메일 또는 비밀번호가 잘못되었습니다.'
-            return render_template('login.html', message=message)
+            # Failed login
+            response = {"success": False}
 
-    return render_template('login.html')
+        return jsonify(response)
+
+    # For GET requests, render the login form
+    member_list = Member.query.all()
+    return render_template("login.html", data=member_list)
 
 
 engine = create_engine(
