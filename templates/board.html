@@ -100,20 +100,53 @@
         }
 
         .submit-button {
+
             padding: 10px 20px;
             background-color: black;
-            color: #fff;
+            color: white;
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            font-size: 16px;
+
         }
 
         .submit-button:hover {
             background-color: #ffe003;
         }
+
+        button+button {
+
+            margin-left: 15px;
+
+        }
+
+        textarea {
+            width: 100%;
+            height: 6.25em;
+            resize: none;
+            border-color: black;
+
+
+        }
+
+        .comment {
+            text-align: right;
+        }
+
+        .x {
+            display: inline-block;
+            display: inline;
+        }
+
+        .x:after {
+            display: inline-block;
+            content: "\00d7";
+            font-size: 15pt;
+        }
     </style>
+
 </head>
+
 
 <body>
     <div class="custom-header-wrap">
@@ -133,63 +166,65 @@
             </nav>
         </header>
     </div>
-
     <div class="form-container">
         <form action="{{url_for('edit_post')}}" method="POST">
-            {%for board in data %}
+            {%for board in data['list'] %}
             <div class="form-image">
                 <img src="{{board[1].image_url}}" class="card-img-top" alt="..." height="100%" width="100%" />
             </div>
 
             <div class="form-group">
-                <input type="text" name="email" value="{{board[0].name}}" class="card-data" />
+                <input type="text" name="email" value="{{board[0].name}}" class="card-data"
+                    style="-webkit-user-drag: none;" readonly />
             </div>
 
             <div class="form-group">
-                <input type="hidden" id="member_id" name="member_id" value="{{board[0].member_id}}" class="card-data" />
+                <input type="hidden" id="member_id" name="member_id" value="{{board[0].member_id}}" class="card-data"
+                    readonly />
             </div>
 
             <div class="form-group">
                 <input type="hidden" id="board_id" name="board_id" value="{{board[1].board_id}}" />
             </div>
 
-            <input type="hidden" id="board_id" name="board_id" value="{{board[1].board_id}}" />
+
 
             <div class="form-group">
-                <input type="text" name="email" value="{{board[0].email}}" class="card-data" />
-            </div>
-
-            <div class="form-group">
-                <input type="text" name="skill" value="{{board[1].skill}}" class="card-data" />
+                <input type="text" name="email" value="{{board[0].email}}" class="card-data" readonly />
             </div>
 
             <div class="form-group">
-                <input type="text" name="secondTag" value="{{board[1].secondTag}}" class="card-data" />
+                <input type="text" name="skill" value="{{board[1].skill}}" class="card-data" readonly />
             </div>
 
             <div class="form-group">
-                <input type="textarea" name="content" value="{{board[1].content}}" class="card-data" />
+                <input type="text" name="secondTag" value="{{board[1].secondTag}}" class="card-data" readonly />
             </div>
 
-            <div class="button-wrap">
-                <button type="submit" class="submit-button">수정</button>
-                <input type="button" value="삭제" class="submit-button" onclick="delete_post()" />
+            <div class="form-group">
+                <input type="text" name="content" value="{{board[1].content}}" class="card-data" />
             </div>
+
+            <div class="form-group" id="comment">
+
+            </div>
+
+
+            {%for m in data['comment']%}
+            <div class="comment">{{m[0].name}} : {{m[1].content}}</div>
+
             {%endfor%}
+
+            {%endfor%}
+            <p style="margin:7px">댓글쓰기</p>
+            <div style="display: flex; padding: 1px; margin: auto">
+
+                <textarea class="commentTextarea"></textarea><input type="button" value="등록" onclick="commentInsert()">
+            </div>
+            <div class="button-wrap" id="scriptBtn" style="float: right; padding-top: 15px;">
+            </div>
         </form>
 
-        <script>
-            function delete_post() {
-                let board_id = document.getElementById("board_id").value;
-
-                let form = document.createElement("form");
-                form.setAttribute("method", "post");
-                form.setAttribute("action", `/post/delete/${board_id}`);
-
-                document.body.append(form);
-                form.submit();
-            }
-        </script>
 
         <script>
             document.addEventListener("DOMContentLoaded", function () {
@@ -205,6 +240,90 @@
             });
         </script>
     </div>
+
 </body>
+<script>
+    function delete_post() {
+        
+        let boardId = document.getElementById("board_id").value
+        alert(boardId)
+        let form = document.createElement("form");
+        form.setAttribute("type","hidden")
+        form.setAttribute("method", "post");
+        form.setAttribute("action", `/post/delete/${boardId}`);
+        form.setAttribute("target","targetName")
+
+        let del = document.createElement('input');
+        del.setAttribute("type","hidden")
+        del.setAttribute("name","board_id");
+        del.setAttribute("value",boardId)
+        form.appendChild(del)
+    
+
+        document.body.appendChild(form)
+        form.submit();
+    }
+
+
+    function showBtn() {
+        let boolean = "{{data['boolean']}}"
+
+        if (boolean === 'True') {
+            var x = document.getElementsByClassName("card-data");
+            for (var i = 0; i < x.length; i++) {
+                x[i].readOnly = false;
+            }
+            let parent = document.getElementById('scriptBtn')
+
+
+            let subBtn = document.createElement('button');
+            let subBtnText = document.createTextNode('수정')
+
+            subBtn.type = "submit"
+            subBtn.className = "submit-button"
+            subBtn.appendChild(subBtnText)
+            parent.append(subBtn)
+
+
+            let btn = document.createElement('button');
+            let btnText = document.createTextNode('삭제')
+            btn.type="button"
+            btn.setAttribute("onClick", `delete_post()`);
+            btn.className = "submit-button"
+            btn.appendChild(btnText)
+
+            parent.append(btn)
+        }
+    }
+    function commentInsert() {
+        
+        let commentBoard_id = document.querySelector('#board_id').value
+        let text = document.querySelector('.commentTextarea').value
+
+        let form = document.createElement("form");
+        form.setAttribute("type","hidden")
+        form.setAttribute("method", "post");
+        form.setAttribute("action", `/post/comment`);
+        form.setAttribute("target","targetName")
+
+        let board = document.createElement("input");
+        board.setAttribute("type","hidden")
+        board.setAttribute("name","board_id")
+        board.setAttribute("value",commentBoard_id)
+        form.appendChild(board)
+
+        let comment = document.createElement("input")
+        comment.setAttribute("name","comment")
+        comment.setAttribute("value",text)
+        form.appendChild(comment)
+
+        document.body.appendChild(form)
+        form.submit();
+
+    }
+
+    showBtn()
+
+</script>
 
 </html>

@@ -10,6 +10,7 @@ import re
 from sqlalchemy import create_engine
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import func
+from sqlalchemy import select
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)
@@ -103,16 +104,37 @@ def edit_post():
 @app.route("/post/<int:id>")
 def select_post(id):
 
+    memberId = current_user.get_id()
+
     board_list = session.query(Member,Board).join(Board).filter_by(board_id=id).all()
     
-    return render_template("board.html", data=board_list)
+    comment_list = session.query(Member, Comment).join(Comment).filter_by(board_id=id).all()
+    
+    rows = select(Board).where(Board.board_id==id).where(Board.member_id==memberId)
+
+    
+    conn = engine.connect()
+
+    boolean = False
+    for row in conn.execute(rows):
+        if row[0] > 0 :
+            boolean = True       
+
+    
+    context= {
+        "boolean" : boolean,
+        "list" : board_list,
+        "comment" : comment_list,
+    }
+    return render_template("board.html", data=context)
 
 
 @app.route("/post/delete/<int:board_id>", methods=["POST"])
 def delete_post(board_id):
     argId = board_id
-
+    
     Board.query.filter_by(board_id=argId).delete()
+    Comment.query.filter_by(board_id=argId).delete()
 
     db.session.commit()
 
@@ -129,8 +151,6 @@ def input_post():
 
         member_id = current_user.get_id()
 
-        print("member_id 나오니 : ", member_id)
-
         board = Board(
             member_id=member_id, skill=skill, secondTag=tags, content=content, image_url=photo
         )
@@ -143,17 +163,16 @@ def input_post():
 
 @app.route("/post/comment", methods=["POST"])
 def input_comment():
-    content = request.form["content"]
-
-    comment = Comment(
-        board_id=3,
-        member_id=1,
-        content=content,
-    )
+    memberId = current_user.get_id()
+    boardId = request.form["board_id"]
+    contentText = request.form["comment"]
+    
+    comment = Comment(member_id=memberId,board_id=boardId,content=contentText)
+  
     db.session.add(comment)
     db.session.commit()
 
-    return render_template("comment.html")
+    return select_post(boardId)
 
 
 @login_manager.user_loader
