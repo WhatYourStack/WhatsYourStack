@@ -1,5 +1,5 @@
 from xml.etree.ElementTree import Comment
-from flask import Flask, render_template, request, jsonify, redirect, url_for
+from flask import Flask, render_template, request, jsonify, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from sqlalchemy.orm import sessionmaker
@@ -148,8 +148,28 @@ def input_comment():
     return render_template('comment.html')
 
 
-@app.route("/login")
+@app.route("/login", methods=["GET", "POST"])
 def login():
+    if request.method == "POST":
+        data = request.json
+        email = data.get("email")
+        password = data.get("password")
+
+        # Check if the entered credentials are valid
+        user = Member.query.filter_by(email=email).first()
+
+        if user and bcrypt.check_password_hash(user.password, password):
+            # Successful login
+            response = {"success": True}
+            
+        
+        else:
+            # Failed login
+            response = {"success": False}
+
+        return jsonify(response)
+
+    # For GET requests, render the login form
     member_list = Member.query.all()
     return render_template("login.html", data=member_list)
 
@@ -201,4 +221,4 @@ def is_valid_email(email):
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run('0.0.0.0', port=5001, debug=True)
