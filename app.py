@@ -129,7 +129,7 @@ def input_post():
 
         member_id = current_user.get_id()
 
-        print("user나오니 : ", member_id)
+        print("member_id 나오니 : ", member_id)
 
         board = Board(
             member_id=member_id, skill=skill, secondTag=tags, content=content, image_url=photo
