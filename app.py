@@ -72,36 +72,42 @@ def search():
 @app.route('/member/edit', methods=['POST'])
 def edit_post():
 
+    memberId_receive = request.form['member_id']
     board_receive = request.form['board_id']
     email_receive = request.form['email']
     skill_receive = request.form['skill']
     secondTag_receive = request.form['secondTag']
     content_receive = request.form['content']
 
-    print(board_receive, email_receive, skill_receive,
-          secondTag_receive, content_receive)
-    return render_template('index.html')
+    
+    Member.query.filter_by(member_id=memberId_receive).update({"email" : email_receive})
+
+    Board.query.filter_by(board_id=board_receive).update({
+         "skill":skill_receive,"secondTag":secondTag_receive,"content":content_receive})
+    
+    db.session.commit()
+    
+    return redirect(url_for('home'))
 
 
 @app.route('/member/<int:id>')
 def select_post(id):
 
-    board_list = session.query(Board, Member).join(
-        Member).filter_by(member_id=id).all()
+    board_list = session.query(Board, Member).join(Member).filter_by(member_id=id).all()
 
     return render_template('board.html', data=board_list)
 
 
-@app.route('/member/delete/<int:member_id>', methods=['POST'])
-def delete_post(member_id):
 
-    argId = member_id
+@app.route('/member/delete/<int:board_id>', methods=['POST'])
+def delete_post(board_id):
 
-    Board.query.filter_by(member_id=argId).delete()
-    print(member_id)
-    # db.session.commit()
+    argId = board_id
+    Board.query.filter_by(board_id=argId).delete()
+    
+    db.session.commit()
 
-    return home()
+    return redirect(url_for('home'))
 
 
 @app.route('/post/insert', methods=['GET', 'POST'])
