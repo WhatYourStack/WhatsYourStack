@@ -180,17 +180,17 @@ def login():
     member_list = Member.query.all()
     return render_template("login.html", data=member_list)
 
+@app.route("/logout")
+def logout():
+    logout_user()
+    return redirect(url_for("home"))
+
 
 engine = create_engine("sqlite:///" + os.path.join(basedir, "database.db"), echo=True)
 
 Session = sessionmaker(bind=engine)
 session = Session()
 
-
-@app.route("/logout")
-def logout():
-    logout_user()
-    return redirect(url_for("home"))
 
 
 @app.route("/register", methods=["GET", "POST"])
