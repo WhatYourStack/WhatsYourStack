@@ -1,4 +1,3 @@
-html
 <!Doctype html>
 <html lang="en">
 
@@ -70,6 +69,7 @@ html
 					const result = await response.json();
 					if (result.success) {
 						alert("Login successful!");
+						window.location.href = "/";
 						// You can redirect the user to another page after successful login
 					} else {
 						alert("Login failed. Please check your email and password.");

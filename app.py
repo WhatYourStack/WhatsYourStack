@@ -155,6 +155,7 @@ def login():
         if user and bcrypt.check_password_hash(user.password, password):
             # Successful login
             response = {"success": True}
+        
         else:
             # Failed login
             response = {"success": False}
