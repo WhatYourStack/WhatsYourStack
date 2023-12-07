@@ -81,7 +81,7 @@
         }
 
         .card_img_wrap img {
-            object-fit:cover;
+            object-fit: cover;
             object-position: center;
         }
 
@@ -134,12 +134,18 @@
                     <a href="/"><img src="/static/images/logo.png" alt="logo" class="logo-img" /></a>
                 </div>
                 <ul class="custom-navbar-list">
+                    {% if session['logged_in'] %}
+                    <li class="custom-nav-item">
+                        <a class="custom-nav-link" href="/">로그아웃</a>
+                    </li>
+                {% else %}
                     <li class="custom-nav-item">
                         <a class="custom-nav-link" href="/login">로그인</a>
                     </li>
                     <li class="custom-nav-item">
                         <a class="custom-nav-link" href="/register">회원가입</a>
                     </li>
+                {% endif %}
                 </ul>
             </nav>
         </header>

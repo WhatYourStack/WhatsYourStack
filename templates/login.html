@@ -70,6 +70,7 @@
 					if (result.success) {
 						alert("Login successful!");
 						window.location.href = "/";
+						session['logged_in'] = True
 						// You can redirect the user to another page after successful login
 					} else {
 						alert("Login failed. Please check your email and password.");
