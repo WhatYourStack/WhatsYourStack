@@ -85,10 +85,16 @@
     </nav>
   </header>
   <script>
-    function test(){
-      memberId = document.getElementsByName('member_id').value
-      boardId = document.getElementsByName('board_id').value
-      alert(`일단 되니? ${memberId} ${boardId}`)
+    function delete_post(){
+      
+      let board_id = document.getElementById("board_id").value;
+      
+      let form = document.createElement("form");
+      form.setAttribute('method','post');
+      form.setAttribute('action',`/member/delete/${board_id}`)
+  
+      document.body.append(form)
+      form.submit()      
     }
   </script>
   <section class="container">
@@ -104,14 +110,14 @@
 
         </div>
         <ul class="list-group list-group-flush">
-          <input type="hidden" name="member_id" value="{{board[1].member_id}}">
-          <input type="hidden" name="board_id" value="{{board[0].board_id}}">
+          <input type="hidden" id="member_id" name="member_id" value="{{board[1].member_id}}">
+          <input type="hidden" id="board_id" name="board_id" value="{{board[0].board_id}}">
           <input type="text" name="email" value="{{board[1].email}}" readonly>
           <input type="text" name="skill" value="{{board[0].skill}}" readonly>
           <input type="text" name="secondTag" value="{{board[0].secondTag}}" readonly>
           <input type="textarea" name="content" value="{{board[0].content}}" readonly>
           <div><button type="submit">수정</button>
-          <input type="button" value="삭제" onclick="test()"></button></div>
+          <input type="button" value="삭제" onclick="delete_post()"></button></div>
 
         </ul>
 
