@@ -135,6 +135,7 @@
             <p>검색 결과가 없습니다.</p>
             {% endfor %}
         </div>
+        <!-- 게시글 작성 -->
         <div class="fixed-button">
             <a href="/post/insert" class="round-button">+</a>
         </div>
@@ -144,6 +145,7 @@
         integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
         crossorigin="anonymous"></script>
     <script>
+        // 태그값 대문자로 바꾸는 함수
         function applyTextTransformations() {
             var skillElements = document.querySelectorAll(".member-skill");
             skillElements.forEach(function (span) {
@@ -155,20 +157,22 @@
                 span.textContent = span.textContent.toUpperCase();
             });
         }
-        function handleSearch(event) {
-            event.preventDefault(); // 기본 폼 제출 동작 방지
 
+        // 검색 기능
+        function handleSearch(event) {
+            event.preventDefault();
             var query = document.querySelector('input[name="query"]').value;
             fetch('/search?query=' + encodeURIComponent(query))
                 .then(response => response.text())
                 .then(html => {
                     document.querySelector('.container').innerHTML = html;
-                    applyTextTransformations(); // 대문자 변환 적용
-                    attachSearchEvent(); // 검색 이벤트 리스너 재적용
+                    applyTextTransformations(); 
+                    attachSearchEvent(); 
                 })
                 .catch(error => console.error('Error:', error));
         }
 
+        // 검색 제출
         function attachSearchEvent() {
             var searchForm = document.getElementById('search-form');
             if (searchForm) {
