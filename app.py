@@ -20,8 +20,8 @@ class Member(db.Model):
     email = db.Column(db.String, nullable=False, unique=True)
     password = db.Column(db.String, nullable=False)
     name = db.Column(db.String, nullable=False)
-    boards = db.relationship('Board', backref='author', lazy=True)
-    comments = db.relationship('Comment', backref='author', lazy=True)
+    boards = db.relationship('Board', backref='board', lazy=True)
+    # comments = db.relationship('Comment', backref='author', lazy=True)
 
 
 class Board(db.Model):
@@ -35,13 +35,13 @@ class Board(db.Model):
     # comments = db.relationship('Comment', backref='comment', lazy=True)
 
 
-# class Comment(db.Model):
-#     comment_id = db.Column(db.Integer, primary_key=True)
-#     member_id = db.Column(db.Integer, db.ForeignKey(
-#         'member.member_id'), nullable=False)
-#     board_id = db.Column(db.Integer, db.ForeignKey(
-#         'board.board_id'), nullable=False)
-#     content = db.Column(db.String, nullable=False)
+class Comment(db.Model):
+    comment_id = db.Column(db.Integer, primary_key=True)
+    member_id = db.Column(db.Integer, db.ForeignKey(
+        'member.member_id'), nullable=False)
+    board_id = db.Column(db.Integer, db.ForeignKey(
+        'board.board_id'), nullable=False)
+    content = db.Column(db.String, nullable=False)
 
 
 @app.route('/')
