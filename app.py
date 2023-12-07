@@ -92,16 +92,16 @@ def select_post(id):
     return render_template('board.html', data=board_list)
 
 
-@app.route('/member/delete/<int:member_id>', methods=['POST'])
-def delete_post(member_id):
+@app.route('/member/delete/<int:board_id>', methods=['POST'])
+def delete_post(board_id):
 
-    argId = member_id
+    argId = board_id
+    print(argId)
+    Board.query.filter_by(board_id=argId).delete()
+    
+    db.session.commit()
 
-    Board.query.filter_by(member_id=argId).delete()
-    print(member_id)
-    # db.session.commit()
-
-    return home()
+    return redirect(url_for('home'))
 
 
 @app.route('/post/insert', methods=['GET', 'POST'])
