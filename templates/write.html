@@ -189,7 +189,7 @@
       <form action="{{url_for('input_post')}}" method="POST">
         {% if current_user.is_authenticated %}
         <div class="form-floating">
-          <h1>{{ current_user.name }} 님 자기소개</h1>
+          <h1 style="font-size: 30px; font-weight: 100; margin-bottom: 20px;">{{ current_user.name }}님의 자기소개</h1>
         </div>
         {% else %}
         <div class="form-floating">
