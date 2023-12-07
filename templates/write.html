@@ -173,30 +173,6 @@
     </div>
 
     <div class="form-container">
-        <!-- <form action="{{url_for('input_post')}}" method="POST">
-            <div class="form-group">
-                <label for="photo_url">이미지 URL:</label>
-                <input type="text" id="photo_url" name="photoUrl" required />
-            </div>
-
-            <div class="form-group">
-                <label for="skill_input">주특기:</label>
-                <input type="text" id="skill_input" name="skill" required />
-            </div>
-
-            <div class="form-group">
-                <label for="tags_input">태그:</label>
-                <input type="text" id="tags_input" name="tags" required />
-            </div>
-
-            <div class="form-group">
-                <label for="content_input">글 내용:</label><br />
-                <textarea id="content_input" name="content" rows="4" cols="50"></textarea>
-            </div>
-
-            <input type="submit" value="게시글 작성" class="submit-button" />
-        </form> -->
-
         <form action="{{url_for('input_post')}}" method="POST">
             <div class="form-floating">
                 <input type="text" id="photo_url" name="photoUrl" placeholder="이미지 URL을 입력해주세요." required />
@@ -223,5 +199,4 @@
         </footer>
     </div>
 </body>
-
 </html>
