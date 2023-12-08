@@ -236,7 +236,8 @@ def register():
         try:
             session.commit()
             print("회원가입이 완료되었습니다.")
-            return redirect("/login")
+            return jsonify({"message": "회원가입이 완료되었습니다."}), 200
+            # return redirect("/login")
         except IntegrityError as e:
             session.rollback()
             print(f"무결성 제약 조건 위반이 발생했습니다: {e}")

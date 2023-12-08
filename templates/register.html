@@ -235,7 +235,6 @@
             var password = document.getElementById("password").value;
             var confirmPassword = document.getElementById("confirmPassword").value;
             var name = document.getElementById("name").value;
-
             var passwordError = document.getElementById("passwordError");
 
             if (password !== confirmPassword) {
@@ -265,8 +264,10 @@
                 }
             })
             .then(data => {
-                    alert("회원가입이 완료되었습니다.");
-                    window.location.href = '/login';
+                alert(data.message);
+                if (data.message === "회원가입이 완료되었습니다.") {
+            window.location.href = '/login';
+        }
             })
             .catch((error) => {
                 console.error('에러 발생:', error);
