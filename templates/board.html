@@ -179,6 +179,12 @@
             margin: 20px 0 5px 5px;
         }
 
+        .comment {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
         .comment,
         .comment_write {
             border: 1px solid #ccc;
@@ -200,8 +206,8 @@
             border: none;
         }
 
-        .comment_btn {
-            margin-top: 10px !important;
+        .comment_btn, .comment_delete_btn {
+            margin-top: 15px !important;
             background-color: black;
             color: white;
             border: none;
@@ -209,7 +215,11 @@
             border-radius: 4px;
         }
 
-        .comment_btn:hover {
+        .comment_delete_btn {
+            margin: 0 !important;
+        }
+
+        .comment_btn:hover, .comment_delete_btn:hover {
             background-color: #ffe003;
             border: none;
         }
@@ -283,13 +293,14 @@
             <p class="comment_title">댓글</p>
             {%for m in data['comment']%}
             <div class="comment">
-                <input type="hidden" value="{{m[0].member_id}}" class="comment_memberId">
-                <input type="hidden" value="{{m[1].comment_id}}" class="commentId">
-                <p class="comment_name">{{m[0].name}}</p>
-                <p class="comment_content">{{m[1].content}}</p>
+                <div>
+                    <input type="hidden" value="{{m[0].member_id}}" class="comment_memberId">
+                    <input type="hidden" value="{{m[1].comment_id}}" class="commentId">
+                    <p class="comment_name">{{m[0].name}}</p>
+                    <p class="comment_content">{{m[1].content}}</p>
+                </div>
                 {% if m[0].member_id==current_user.get_id()%}
-                
-                <button type="button" onclick="commentDelete('{{m[1].comment_id}}')">삭제</button>
+                <button class="comment_delete_btn" type="button" onclick="commentDelete('{{m[1].comment_id}}')">삭제</button>
                 {% endif %}
             </div>
             {%endfor%}
@@ -442,9 +453,8 @@
         form.submit();
         
     }
-
+    
     showBtn()
-
 </script>
 
 </html>
