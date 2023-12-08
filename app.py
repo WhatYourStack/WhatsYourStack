@@ -175,6 +175,19 @@ def input_comment():
     return select_post(boardId)
 
 
+@app.route("/post/comment/delete",methods=["POST"])
+def delete_comment():
+    commentId = request.form["comment_id"]
+    boardId = request.form["board_id"]    
+    
+    Comment.query.filter_by(comment_id=commentId).delete()
+    
+    db.session.commit()
+
+    return select_post(boardId)
+
+
+
 @login_manager.user_loader
 def load_user(user_id):
     return Member.query.get(int(user_id))
