@@ -252,12 +252,14 @@
             {%endfor%}
 
             {%endfor%}
+            {% if current_user.is_authenticated %}
             <p style="margin:7px">댓글쓰기</p>
             <div style="display: flex; padding: 1px; margin: auto">
 
                 <textarea class="commentTextarea"></textarea><input type="button" value="등록" onclick="commentInsert()">
             </div>
             <div class="button-wrap" id="scriptBtn" style="float: right; padding-top: 15px;">
+            {% endif %}
             </div>
         </form>
 
