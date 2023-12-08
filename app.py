@@ -195,7 +195,7 @@ def load_user(user_id):
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    if request.method == "POST":
+    if request.method == "POST": # 여기서 진짜 비밀번호가 맞는지 아닌지를 판별합니다. 
         data = request.json
         email = data.get("email")
         password = data.get("password")
@@ -205,7 +205,7 @@ def login():
 
         if user and bcrypt.check_password_hash(user.password, password):
             # Successful login
-            login_user(user)  # Log in the user
+            login_user(user)  # Log in the user 이게 flask_login의 함수인데, 유저의 정보를 세션에 올려줘요. 
             response = {"success": True}
         else:
             # Failed login
@@ -217,17 +217,17 @@ def login():
     member_list = Member.query.all()
     return render_template("login.html", data=member_list)
 
+@app.route("/logout")
+def logout():
+    logout_user()
+    return redirect(url_for("home"))
+
 
 engine = create_engine("sqlite:///" + os.path.join(basedir, "database.db"), echo=True)
 
 Session = sessionmaker(bind=engine)
 session = Session()
 
-
-@app.route("/logout")
-def logout():
-    logout_user()
-    return redirect(url_for("home"))
 
 
 @app.route("/register", methods=["GET", "POST"])

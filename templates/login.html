@@ -172,7 +172,7 @@
 			var email = document.getElementById("floatingInput").value;
 			var password = document.getElementById("floatingPassword").value;
 
-			if (email && password) {
+			if (email && password) { /// 입력되어 있으면 ( 들어있는지 아닌지만 확인함 )
 				try {
 					const response = await fetch('/login', {
 						method: 'POST',
@@ -182,12 +182,12 @@
 						body: JSON.stringify({ email: email, password: password }),
 					});
 
-					if (response.ok) {
+					if (response.ok) { // app.py에서 요청이 성공적으로 처리되었는지 판별
 						const result = await response.json();
-						if (result.success) {
-							alert("로그인에 성공했습니다.");
-							window.location.href = "/";
-						} else {
+						if (result.success) { // app.py에서 success = True를 보냈다면
+							alert("로그인에 성공했습니다."); // 위에 팝업이 뜨겠죠?
+							window.location.href = "/"; // 홈화면으로 보내줌 . ( 로그인은 이미 세션에 올라가있음 ) 
+						} else { // app.py에서 success = False면 
 							alert("로그인에 실패했습니다. 이메일과 비밀번호를 확인해 주세요.");
 						}
 					} else {
@@ -196,7 +196,7 @@
 				} catch (error) {
 					console.error('Error during login:', error);
 				}
-			} else {
+			} else { // 입력이 안되엇을 경우 ( input box 가 비여있을 경우 )
 				alert("Please enter both email and password.");
 			}
 		}
