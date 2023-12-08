@@ -162,17 +162,6 @@
             border-color: black;
         }
 
-        .x {
-            display: inline-block;
-            display: inline;
-        }
-
-        .x:after {
-            display: inline-block;
-            content: "\00d7";
-            font-size: 15pt;
-        }
-
         .comment_title,
         .comment_write_title {
             font-weight: bold;
@@ -261,7 +250,7 @@
             </div>
 
             <div class="form-group">
-                <input type="text" name="email" value="{{board[0].name}}" class="card-data"
+                <input type="text" name="name" value="{{board[0].name}}" class="card-data"
                     style="-webkit-user-drag: none;" readonly />
             </div>
 
@@ -378,10 +367,12 @@
         let boolean = "{{data['boolean']}}";
 
         if (boolean === 'True') {
-            var x = document.getElementsByClassName("card-data");
+            var cardData = document.getElementsByClassName("card-data");
 
-            for (var i = 0; i < x.length; i++) {
-                x[i].readOnly = false;
+            for (var i = 0; i < cardData.length; i++) {
+                if (i > 2) {
+                    cardData[i].readOnly = false;
+                }
             }
 
             let parent = document.getElementById('scriptBtn');
