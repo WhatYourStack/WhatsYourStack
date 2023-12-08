@@ -160,16 +160,14 @@
 	</div>
 
 	<script>
-		// Login part
+		// 로그인
 		async function processLogin(event) {
-			event.preventDefault(); // Prevent form submission
+			event.preventDefault(); 
 			var email = document.getElementById("floatingInput").value;
 			var password = document.getElementById("floatingPassword").value;
 
-			// Perform client-side validation (you should also perform server-side validation)
 			if (email && password) {
 				try {
-					// Send login data to the server for verification
 					const response = await fetch('/login', {
 						method: 'POST',
 						headers: {
@@ -179,17 +177,15 @@
 					});
 
 					if (response.ok) {
-						// Successful login
 						const result = await response.json();
 						if (result.success) {
-							alert("Login successful!");
+							alert("로그인에 성공했습니다.");
 							window.location.href = "/";
-							// You can redirect the user to another page after successful login
 						} else {
-							alert("Login failed. Please check your email and password.");
+							alert("로그인에 실패했습니다. 이메일과 비밀번호를 확인해 주세요.");
 						}
 					} else {
-						alert("Error during login. Please try again.");
+						alert("로그인에 문제가 생겼습니다. 다시 시도해 주세요.");
 					}
 				} catch (error) {
 					console.error('Error during login:', error);
