@@ -251,21 +251,21 @@
                     name: name
                 }),
             })
-                .then(response => {
-                    if (response.redirected) {
-                        // 클라이언트 측에서 리다이렉션 처리
-                        window.location.href = response.url;
-                    } else {
-                        return response.json();
-                    }
-                })
-                .then(data => {
-                        alert("회원가입이 완료되었습니다.");
-                        window.location.href = '/login';
-                })
-                .catch((error) => {
-                    console.error('에러 발생:', error);
-                });
+            .then(response => {
+                if (response.redirected) {
+                    // 클라이언트 측에서 리다이렉션 처리
+                    window.location.href = response.url;
+                } else {
+                    return response.json();
+                }
+            })
+            .then(data => {
+                    alert("회원가입이 완료되었습니다.");
+                    window.location.href = '/login';
+            })
+            .catch((error) => {
+                console.error('에러 발생:', error);
+            });
         }
     </script>
 

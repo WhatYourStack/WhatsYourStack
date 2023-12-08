@@ -206,9 +206,7 @@
 			border: none;
         }
     </style>
-
 </head>
-
 
 <body>
     <div class="custom-header-wrap">
@@ -333,9 +331,8 @@
 </body>
 <script>
     function delete_post() {
-        
-        let boardId = document.getElementById("board_id").value
-        alert(boardId)
+        let boardId = document.getElementById("board_id").value;
+        alert(boardId);
         let form = document.createElement("form");
         form.setAttribute("type","hidden")
         form.setAttribute("method", "post");
@@ -343,72 +340,68 @@
         form.setAttribute("target","targetName")
 
         let del = document.createElement('input');
-        del.setAttribute("type","hidden")
+        del.setAttribute("type","hidden");
         del.setAttribute("name","board_id");
-        del.setAttribute("value",boardId)
-        form.appendChild(del)
-    
+        del.setAttribute("value",boardId);
+        form.appendChild(del);
 
-        document.body.appendChild(form)
+        document.body.appendChild(form);
         form.submit();
     }
 
-
     function showBtn() {
-        let boolean = "{{data['boolean']}}"
+        let boolean = "{{data['boolean']}}";
 
         if (boolean === 'True') {
             var x = document.getElementsByClassName("card-data");
+
             for (var i = 0; i < x.length; i++) {
                 x[i].readOnly = false;
             }
-            let parent = document.getElementById('scriptBtn')
 
-
+            let parent = document.getElementById('scriptBtn');
             let subBtn = document.createElement('button');
-            let subBtnText = document.createTextNode('수정')
+            let subBtnText = document.createTextNode('수정');
 
-            subBtn.type = "submit"
-            subBtn.className = "submit-button"
-            subBtn.appendChild(subBtnText)
-            parent.append(subBtn)
-
+            subBtn.type = "submit";
+            subBtn.className = "submit-button";
+            subBtn.appendChild(subBtnText);
+            parent.append(subBtn);
 
             let btn = document.createElement('button');
-            let btnText = document.createTextNode('삭제')
-            btn.type="button"
+            let btnText = document.createTextNode('삭제');
+            btn.type="button";
             btn.setAttribute("onClick", `delete_post()`);
-            btn.className = "submit-button"
-            btn.appendChild(btnText)
+            btn.className = "submit-button";
+            btn.appendChild(btnText);
 
-            parent.append(btn)
+            parent.append(btn);
         }
     }
+
     function commentInsert() {
-        
-        let commentBoard_id = document.querySelector('#board_id').value
-        let text = document.querySelector('.comment_textarea').value
+        let commentBoard_id = document.querySelector('#board_id').value;
+        let text = document.querySelector('.comment_textarea').value;
 
         let form = document.createElement("form");
-        form.setAttribute("type","hidden")
+        form.setAttribute("type","hidden");
         form.setAttribute("method", "post");
         form.setAttribute("action", `/post/comment`);
-        form.setAttribute("target","targetName")
+        form.setAttribute("target","targetName");
 
         let board = document.createElement("input");
-        board.setAttribute("type","hidden")
-        board.setAttribute("name","board_id")
-        board.setAttribute("value",commentBoard_id)
-        form.appendChild(board)
+        board.setAttribute("type","hidden");
+        board.setAttribute("name","board_id");
+        board.setAttribute("value",commentBoard_id);
+        form.appendChild(board);
 
-        let comment = document.createElement("input")
-        comment.setAttribute("name","comment")
-        comment.setAttribute("value",text)
-        form.appendChild(comment)
+        let comment = document.createElement("input");
+        comment.setAttribute("name","comment");
+        comment.setAttribute("value",text);
+        form.appendChild(comment);
 
-        document.body.appendChild(form)
+        document.body.appendChild(form);
         form.submit();
-
     }
 
     showBtn()
