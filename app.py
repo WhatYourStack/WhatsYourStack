@@ -3,12 +3,14 @@ from flask import Flask, render_template, request, jsonify, redirect, url_for, s
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, UserMixin, login_user, logout_user
+from flask_login import current_user
 from sqlalchemy.orm import sessionmaker
 import os
 import re
 from sqlalchemy import create_engine
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import func
+from sqlalchemy import select
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)
@@ -102,16 +104,37 @@ def edit_post():
 @app.route("/post/<int:id>")
 def select_post(id):
 
+    memberId = current_user.get_id()
+
     board_list = session.query(Member,Board).join(Board).filter_by(board_id=id).all()
     
-    return render_template("board.html", data=board_list)
+    comment_list = session.query(Member, Comment).join(Comment).filter_by(board_id=id).all()
+    
+    rows = select(Board).where(Board.board_id==id).where(Board.member_id==memberId)
+
+    
+    conn = engine.connect()
+
+    boolean = False
+    for row in conn.execute(rows):
+        if row[0] > 0 :
+            boolean = True       
+
+    
+    context= {
+        "boolean" : boolean,
+        "list" : board_list,
+        "comment" : comment_list,
+    }
+    return render_template("board.html", data=context)
 
 
 @app.route("/post/delete/<int:board_id>", methods=["POST"])
 def delete_post(board_id):
     argId = board_id
-
+    
     Board.query.filter_by(board_id=argId).delete()
+    Comment.query.filter_by(board_id=argId).delete()
 
     db.session.commit()
 
@@ -126,8 +149,10 @@ def input_post():
         tags = request.form["tags"]
         content = request.form["content"]
 
+        member_id = current_user.get_id()
+
         board = Board(
-            member_id=1, skill=skill, secondTag=tags, content=content, image_url=photo
+            member_id=member_id, skill=skill, secondTag=tags, content=content, image_url=photo
         )
         db.session.add(board)
         db.session.commit()
@@ -138,17 +163,16 @@ def input_post():
 
 @app.route("/post/comment", methods=["POST"])
 def input_comment():
-    content = request.form["content"]
-
-    comment = Comment(
-        board_id=3,
-        member_id=1,
-        content=content,
-    )
+    memberId = current_user.get_id()
+    boardId = request.form["board_id"]
+    contentText = request.form["comment"]
+    
+    comment = Comment(member_id=memberId,board_id=boardId,content=contentText)
+  
     db.session.add(comment)
     db.session.commit()
 
-    return render_template("comment.html")
+    return select_post(boardId)
 
 
 @login_manager.user_loader

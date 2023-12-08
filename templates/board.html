@@ -4,6 +4,8 @@
 <head>
     <meta charset="UTF-8" />
     <title>자기소개 작성</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous" />
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -12,12 +14,13 @@
         .custom-header-wrap {
             width: 100%;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            background-color: #fff;
         }
 
         .custom-header {
             width: 76%;
             margin: auto;
-            margin-bottom: 50px;
+            margin-bottom: 30px;
         }
 
         .custom-nav {
@@ -54,6 +57,31 @@
             background-color: #ffe003;
         }
 
+        .custom-footer-wrap {
+            width: 100%;
+            padding-top: 20px;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+            margin-top: 50px;
+            position: fixed;
+            bottom: 0;
+            z-index: 9999;
+            background-color: #fff;
+            color: gray;
+            font-weight: 100;
+            text-align: center;
+        }
+
+        .custom-footer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .github-logo {
+            width: 30px;
+            height: 30px;
+            margin: 0 0 16px 10px;
+        }
         .card_img_wrap {
             height: 400px;
             text-align: center;
@@ -76,7 +104,7 @@
 
         .form-container {
             width: 50%;
-            margin: 50px auto;
+            margin: 0 auto 100px;
             background-color: #fff;
             padding: 20px;
             border-radius: 8px;
@@ -99,20 +127,53 @@
         }
 
         .submit-button {
+
             padding: 10px 20px;
             background-color: black;
-            color: #fff;
+            color: white;
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            font-size: 16px;
+
         }
 
         .submit-button:hover {
             background-color: #ffe003;
         }
+
+        button+button {
+
+            margin-left: 15px;
+
+        }
+
+        textarea {
+            width: 100%;
+            height: 6.25em;
+            resize: none;
+            border-color: black;
+
+
+        }
+
+        .comment {
+            text-align: right;
+        }
+
+        .x {
+            display: inline-block;
+            display: inline;
+        }
+
+        .x:after {
+            display: inline-block;
+            content: "\00d7";
+            font-size: 15pt;
+        }
     </style>
+
 </head>
+
 
 <body>
     <div class="custom-header-wrap">
@@ -122,60 +183,93 @@
                     <a href="/"><img src="/static/images/logo.png" alt="logo" class="logo-img" /></a>
                 </div>
                 <ul class="custom-navbar-list">
+                    {% if current_user.is_authenticated %}
+                    <li class="custom-nav-item">
+                        <p style="margin: 0">{{ current_user.name }}님 환영합니다!</p>
+                    </li>
+                    <li class="custom-nav-item">
+                        <a class="custom-nav-link" href="/logout">로그아웃</a>
+                    </li>
+                    {% else %}
                     <li class="custom-nav-item">
                         <a class="custom-nav-link" href="/login">로그인</a>
                     </li>
                     <li class="custom-nav-item">
                         <a class="custom-nav-link" href="/register">회원가입</a>
                     </li>
+                    {% endif %}
                 </ul>
             </nav>
         </header>
     </div>
-
     <div class="form-container">
         <form action="{{url_for('edit_post')}}" method="POST">
-            {%for board in data %}
+            {%for board in data['list'] %}
             <div class="form-image">
                 <img src="{{board[1].image_url}}" class="card-img-top" alt="..." height="100%" width="100%" />
             </div>
 
             <div class="form-group">
-                <input type="text" name="email" value="{{board[0].name}}" class="card-data" />
+                <input type="text" name="email" value="{{board[0].name}}" class="card-data"
+                    style="-webkit-user-drag: none;" readonly />
             </div>
 
             <div class="form-group">
-                <input type="hidden" id="member_id" name="member_id" value="{{board[0].member_id}}" class="card-data" />
+                <input type="hidden" id="member_id" name="member_id" value="{{board[0].member_id}}" class="card-data"
+                    readonly />
             </div>
 
             <div class="form-group">
                 <input type="hidden" id="board_id" name="board_id" value="{{board[1].board_id}}" />
             </div>
 
-            <input type="hidden" id="board_id" name="board_id" value="{{board[1].board_id}}" />
+
 
             <div class="form-group">
-                <input type="text" name="email" value="{{board[0].email}}" class="card-data" />
-            </div>
-
-            <div class="form-group">
-                <input type="text" name="skill" value="{{board[1].skill}}" class="card-data" />
+                <input type="text" name="email" value="{{board[0].email}}" class="card-data" readonly />
             </div>
 
             <div class="form-group">
-                <input type="text" name="secondTag" value="{{board[1].secondTag}}" class="card-data" />
+                <input type="text" name="skill" value="{{board[1].skill}}" class="card-data" readonly />
             </div>
 
             <div class="form-group">
-                <input type="textarea" name="content" value="{{board[1].content}}" class="card-data" />
+                <input type="text" name="secondTag" value="{{board[1].secondTag}}" class="card-data" readonly />
             </div>
 
-            <div class="button-wrap">
-                <button type="submit" class="submit-button">수정</button>
-                <input type="button" value="삭제" class="submit-button" onclick="delete_post()" />
+            <div class="form-group">
+                <input type="text" name="content" value="{{board[1].content}}" class="card-data" />
             </div>
+
+            <div class="form-group" id="comment">
+
+            </div>
+
+
+            {%for m in data['comment']%}
+            <div class="comment">{{m[0].name}} : {{m[1].content}}</div>
+
             {%endfor%}
+
+            {%endfor%}
+            {% if current_user.is_authenticated %}
+            <p style="margin:7px">댓글쓰기</p>
+            <div style="display: flex; padding: 1px; margin: auto">
+
+                <textarea class="commentTextarea"></textarea><input type="button" value="등록" onclick="commentInsert()">
+            </div>
+            <div class="button-wrap" id="scriptBtn" style="float: right; padding-top: 15px;">
+            {% endif %}
+            </div>
         </form>
+
+        <div class="custom-footer-wrap">
+            <footer class="custom-footer">
+                <p>Project By 강다온, 김다보미, 김명찬, 박성진, 이승배, 현민영</p>
+                <a href="https://github.com/WhatYourStack/WhatsYourStack" target="_blank"><img
+                        src="/static/images/github-logo.png" alt="github-logo" class="github-logo" /></a>
+            </footer>
+        </div>
 
         <script>
             function delete_post() {
@@ -204,6 +298,90 @@
             });
         </script>
     </div>
+
 </body>
+<script>
+    function delete_post() {
+        
+        let boardId = document.getElementById("board_id").value
+        alert(boardId)
+        let form = document.createElement("form");
+        form.setAttribute("type","hidden")
+        form.setAttribute("method", "post");
+        form.setAttribute("action", `/post/delete/${boardId}`);
+        form.setAttribute("target","targetName")
+
+        let del = document.createElement('input');
+        del.setAttribute("type","hidden")
+        del.setAttribute("name","board_id");
+        del.setAttribute("value",boardId)
+        form.appendChild(del)
+    
+
+        document.body.appendChild(form)
+        form.submit();
+    }
+
+
+    function showBtn() {
+        let boolean = "{{data['boolean']}}"
+
+        if (boolean === 'True') {
+            var x = document.getElementsByClassName("card-data");
+            for (var i = 0; i < x.length; i++) {
+                x[i].readOnly = false;
+            }
+            let parent = document.getElementById('scriptBtn')
+
+
+            let subBtn = document.createElement('button');
+            let subBtnText = document.createTextNode('수정')
+
+            subBtn.type = "submit"
+            subBtn.className = "submit-button"
+            subBtn.appendChild(subBtnText)
+            parent.append(subBtn)
+
+
+            let btn = document.createElement('button');
+            let btnText = document.createTextNode('삭제')
+            btn.type="button"
+            btn.setAttribute("onClick", `delete_post()`);
+            btn.className = "submit-button"
+            btn.appendChild(btnText)
+
+            parent.append(btn)
+        }
+    }
+    function commentInsert() {
+        
+        let commentBoard_id = document.querySelector('#board_id').value
+        let text = document.querySelector('.commentTextarea').value
+
+        let form = document.createElement("form");
+        form.setAttribute("type","hidden")
+        form.setAttribute("method", "post");
+        form.setAttribute("action", `/post/comment`);
+        form.setAttribute("target","targetName")
+
+        let board = document.createElement("input");
+        board.setAttribute("type","hidden")
+        board.setAttribute("name","board_id")
+        board.setAttribute("value",commentBoard_id)
+        form.appendChild(board)
+
+        let comment = document.createElement("input")
+        comment.setAttribute("name","comment")
+        comment.setAttribute("value",text)
+        form.appendChild(comment)
+
+        document.body.appendChild(form)
+        form.submit();
+
+    }
+
+    showBtn()
+
+</script>
 
 </html>
